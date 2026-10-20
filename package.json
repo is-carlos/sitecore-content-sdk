@@ -64,6 +64,9 @@
     "dev": "cross-env NODE_ENV=development npm-run-all --serial sitecore-tools:generate-map sitecore-tools:build --parallel next:dev sitecore-tools:generate-map:watch",
     "start": "cross-env-shell NODE_ENV=production npm-run-all --serial build next:start",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "dev:mock": "cross-env NEXT_PUBLIC_SITECORE_MOCK=true npm-run-all --parallel mock:server dev",
+    "mock:server": "node scripts/mock-sitecore/server.mjs",
+    "mock:snapshot": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/mock-sitecore/snapshot.mjs"
   }
 }

@@ -9,6 +9,7 @@
 ```bash
 npm install
 npm run dev          # Start development server
+npm run dev:mock     # Start dev server against the local Sitecore mock (no Sitecore needed)
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
@@ -16,6 +17,8 @@ npm run type-check   # Run TypeScript compiler
 ```
 
 **Environment:** Copy `.env.example` to `.env.local` and set Sitecore API endpoint, key, default site, and language. Never commit `.env` or `.env.local`.
+
+**Without Sitecore:** `npm run mock:snapshot -- --site <name>` captures content into `mock-data/`; `npm run dev:mock` serves it from a local GraphQL mock. See [scripts/mock-sitecore/README.md](scripts/mock-sitecore/README.md).
 
 **Component map:** `.sitecore/component-map.ts` is auto-generated from `src/components/` during `npm run dev` (watch) and `npm run build`. No manual action needed unless the generator cannot handle a case.
 

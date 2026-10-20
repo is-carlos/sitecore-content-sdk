@@ -1,4 +1,9 @@
-import { ComponentMap, Page, SitecoreProvider } from '@sitecore-content-sdk/nextjs';
+import {
+  ComponentMap,
+  LayoutServicePageState,
+  Page,
+  SitecoreProvider,
+} from '@sitecore-content-sdk/nextjs';
 import type { Decorator } from '@storybook/nextjs';
 
 /**
@@ -11,7 +16,7 @@ export const createMockPage = (overrides: Partial<Page> = {}): Page => ({
   locale: 'en',
   siteName: 'storybook',
   mode: {
-    name: 'normal',
+    name: LayoutServicePageState.Normal,
     isNormal: true,
     isPreview: false,
     isEditing: false,
@@ -41,7 +46,11 @@ export const withSitecore: Decorator = (Story, context) => {
 
   return (
     <SitecoreProvider
-      api={{}}
+      // Stories never call Sitecore, so no API credentials are needed
+      api={{
+        edge: { contextId: '', clientContextId: '', edgeUrl: '' },
+        local: { apiKey: '', apiHost: '', path: '' },
+      }}
       componentMap={componentMap || new Map()}
       page={page || createMockPage()}
     >

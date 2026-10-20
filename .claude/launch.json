@@ -9,6 +9,13 @@
       "autoPort": false
     },
     {
+      "name": "next-dev-mock",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "PORT=3001 npm run dev:mock"],
+      "port": 3001,
+      "autoPort": false
+    },
+    {
       "name": "storybook",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["storybook", "dev", "-p", "6006", "--no-open", "--disable-telemetry"],
