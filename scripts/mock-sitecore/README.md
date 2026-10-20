@@ -20,7 +20,7 @@ write them by hand.
 
 ```bash
 # 1. Optional: capture real content (needs Sitecore credentials in .env.local)
-npm run mock:snapshot -- --site ascrs --limit 25
+npm run mock:snapshot -- --site my-site --limit 25
 
 # 2. Run the app against the mock
 npm run dev:mock
@@ -82,10 +82,10 @@ The app code (pages, proxy, components) is unchanged. Only the GraphQL endpoint 
 Examples:
 
 ```bash
-npm run mock:snapshot -- --site ascrs                       # crawl up to 100 routes
-npm run mock:snapshot -- --site ascrs --limit 20
-npm run mock:snapshot -- --site ascrs,asoa --routes /,/about-us
-npm run mock:snapshot -- --site ascrs --lang en
+npm run mock:snapshot -- --site my-site                       # crawl up to 100 routes
+npm run mock:snapshot -- --site my-site --limit 20
+npm run mock:snapshot -- --site my-site,other-site --routes /,/about-us
+npm run mock:snapshot -- --site my-site --lang en
 ```
 
 Every run rewrites `mock-data/sites.json` and the dictionary for each captured site,
@@ -130,14 +130,16 @@ hostname.
 
 ```json
 [
-  { "name": "ascrs", "hostName": "dev.ascrs.org|local.ascrs.org|localhost", "language": "en" }
+  { "name": "uso", "hostName": "localhost|127.0.0.1", "language": "en" }
 ]
 ```
 
 `hostName` can hold several hosts separated by `|`, `,` or `;`, and `*` wildcards.
 Exact hosts win over wildcards, so adding `localhost` to a site makes it the site for
-`http://localhost:<port>/` even when another site uses `*`. In this repo `ascrs` has
-`localhost`.
+`http://localhost:<port>/` even when another uses `*`. That matters even with one site:
+when `NEXT_PUBLIC_DEFAULT_SITE_NAME` is set, `sitecore-tools project build` adds that site
+to the front of `.sitecore/sites.json` with hostName `*`. In this repo the only site is
+`uso`, with `localhost|127.0.0.1`, so it wins over the added `Default` site locally.
 
 ### `dictionary.json`
 
@@ -159,7 +161,7 @@ production.
   "sitecore": {
     "context": {
       "pageEditing": false,
-      "site": { "name": "ascrs" },
+      "site": { "name": "uso" },
       "pageState": "normal",
       "language": "en",
       "itemPath": "/"
@@ -247,15 +249,18 @@ Save it as `routes/_root.json`. The USO page in this repo is set up this way.
 Edit fixture values directly: empty strings, very long text, missing images, extra
 items in a list. This is the main advantage over a live Sitecore instance.
 
-### Serve a different site on localhost
+### Add another site
 
-Move `localhost` to that site's `hostName` in `mock-data/sites.json` and restart
-`npm run dev:mock`. You can also pick a site per request with `?sc_site=<name>`.
+Add an entry to `mock-data/sites.json` and a `mock-data/<name>/<lang>/` folder, then
+restart `npm run dev:mock`. With several sites, give the one you want on localhost a
+`localhost` host (exact hosts beat `*`), or pick a site per request with `?sc_site=<name>`.
 
 ### Refresh from Sitecore
 
 Re-run `npm run mock:snapshot`. Hand edits to captured routes are overwritten, and
-`sites.json` is replaced, so re-add `localhost` to the site you serve locally.
+`sites.json` is replaced with Sitecore's site list. The `uso` site exists only in the
+mock, so add its entry back to `sites.json` afterwards (and decide which site gets
+`localhost`).
 
 ## Troubleshooting
 

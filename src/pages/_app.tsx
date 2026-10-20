@@ -4,12 +4,20 @@ import { I18nProvider } from 'next-localization';
 import Bootstrap from 'src/Bootstrap';
 import { SitecorePageProps } from '@sitecore-content-sdk/nextjs';
 import scConfig from 'sitecore.config';
+import { openSans, poppins } from 'lib/fonts';
 
 function App({ Component, pageProps }: AppProps<SitecorePageProps>): JSX.Element {
   const { dictionary, ...rest } = pageProps;
 
   return (
     <>
+      {/* styled-jsx only interpolates values, so the font families are set one by one */}
+      <style jsx global>{`
+        :root {
+          --font-poppins: ${poppins.style.fontFamily};
+          --font-open-sans: ${openSans.style.fontFamily};
+        }
+      `}</style>
       <Bootstrap {...pageProps} />
       {/*
         // Use the next-localization (w/ rosetta) library to provide our translation dictionary to the app.

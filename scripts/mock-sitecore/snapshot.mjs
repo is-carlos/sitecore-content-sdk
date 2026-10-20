@@ -6,10 +6,10 @@
  * SITECORE_API_HOST + SITECORE_API_KEY for a local CM).
  *
  * Usage:
- *   npm run mock:snapshot -- --site ascrs                 crawl up to 100 routes of a site
- *   npm run mock:snapshot -- --site ascrs --limit 20
- *   npm run mock:snapshot -- --site ascrs,asoa --routes /,/about
- *   npm run mock:snapshot -- --site ascrs --lang en
+ *   npm run mock:snapshot -- --site my-site                 crawl up to 100 routes of a site
+ *   npm run mock:snapshot -- --site my-site --limit 20
+ *   npm run mock:snapshot -- --site my-site,other-site --routes /,/about
+ *   npm run mock:snapshot -- --site my-site --lang en
  */
 import { createRequire } from 'node:module';
 import { parseArgs } from 'node:util';

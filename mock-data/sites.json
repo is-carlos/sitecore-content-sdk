@@ -1,32 +1,7 @@
 [
   {
-    "name": "Shared Site",
-    "hostName": "*",
-    "language": "en"
-  },
-  {
-    "name": "annualmeeting",
-    "hostName": "dev-annualmeeting.ascrs.org",
-    "language": "en"
-  },
-  {
-    "name": "ascrs",
-    "hostName": "dev.ascrs.org|local.ascrs.org|localhost",
-    "language": "en"
-  },
-  {
-    "name": "asoa",
-    "hostName": "dev.asoa.org|local.asoa.org",
-    "language": "en"
-  },
-  {
-    "name": "eyesustain",
-    "hostName": "dev.eyesustain.org",
-    "language": "en"
-  },
-  {
-    "name": "subspecialtyday",
-    "hostName": "dev-subspecialtyday.ascrs.org",
+    "name": "uso",
+    "hostName": "localhost|127.0.0.1",
     "language": "en"
   }
 ]

@@ -1,0 +1,61 @@
+{
+  "sitecore": {
+    "context": {
+      "pageEditing": false,
+      "site": {
+        "name": "uso"
+      },
+      "pageState": "normal",
+      "editMode": "chromes",
+      "language": "en",
+      "itemPath": "/single-cta"
+    },
+    "route": {
+      "name": "single-cta",
+      "displayName": "Single CTA",
+      "databaseName": "master",
+      "itemId": "2a7b4c9d-1e3f-4a5b-8c6d-7e8f9a0b1c2d",
+      "itemLanguage": "en",
+      "itemVersion": 1,
+      "templateName": "Page",
+      "fields": {
+        "Title": {
+          "value": "Single CTA"
+        },
+        "MetaTitle": {
+          "value": "Single CTA"
+        }
+      },
+      "placeholders": {
+        "headless-header": [],
+        "headless-main": [
+          {
+            "uid": "8f1c2d3e-4b5a-4c6d-9e7f-1a2b3c4d5e6f",
+            "componentName": "SingleCta",
+            "dataSource": "{5B1D3C8E-2A4F-4E6B-9C7D-8E9F0A1B2C3D}",
+            "params": {},
+            "fields": {
+              "Eyebrow": {
+                "value": "Fundraise for USO"
+              },
+              "Title": {
+                "value": "Their mission. Your mission."
+              },
+              "Text": {
+                "value": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>"
+              },
+              "PrimaryCTA": {
+                "value": {
+                  "href": "#",
+                  "text": "Start a fundraiser",
+                  "linktype": "external"
+                }
+              }
+            }
+          }
+        ],
+        "headless-footer": []
+      }
+    }
+  }
+}
