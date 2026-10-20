@@ -1,7 +1,7 @@
 # Content model: Figma → Sitecore fields
 
 ## Naming
-- **Field name:** match the casing that existing components in the project use (e.g. `heading` in JSS starters, `Title` in many Content SDK projects). If there are none, use no-space PascalCase. Never use spaces — components read `fields.<name>` directly.
+- **Field name:** match the casing that existing components in the project use (e.g. `Title` in many Content SDK projects, `heading` in others). If there are none, use no-space PascalCase. Never use spaces — components read `fields.<name>` directly.
 - **Field title** (author label, when the target supports it): the friendly name, e.g. `Primary CTA`.
 - **Derive names from meaning, not layers.** Layer names are usually generic (`Text`, `Frame 27`). Use, in order: a `Content` annotation, a component property name, the text style (`Eyebrow/LG` → `eyebrow`, `Heading/H2` → `heading`, `Body/LG` → `body`), the component name (`Button_Primary` → `link` / `primaryCta`).
 - Avoid names that collide with standard Sitecore fields (`name`, `created`, `icon`, anything starting with `__`).
@@ -18,7 +18,7 @@
 | Boolean component property an author toggles | Checkbox | `{ value: true }` | |
 | Date-looking text | Date | `{ value: '2026-10-20T00:00:00Z' }` | Confirm with the user. |
 | Downloadable document | File | `{ value: { src, title } }` | |
-| `repeats` group (same component, or same structure under different layer names) | Content List / child items | `[{ id, name, fields: { … } }]` | See below. One item template; its fields come from one repeated frame. |
+| `repeats` group (same component, or same structure under different layer names) | Treelist / Multilist of items | `[{ id, name, fields: { … } }]` | See below. One item template; its fields come from one repeated frame. |
 | `optional` element that is **off** in this instance (e.g. a hidden text button) | The element's own type (often General Link), optional | as above | The design system allows it here; ask whether to support it. Render only when it has a value. |
 | `stroke` on a frame | — (styling) | — | A rule or border. `INSIDE` strokes sit within the padding: subtract the stroke width from that side's CSS padding. |
 | `unusedProps` on an instance | — | — | A boolean property no layer uses: a design-system leftover. Not a field; mention it, don't build it. |
@@ -28,7 +28,7 @@
 
 When a design shows one frame holding interchangeable content (a footer with "a CTA or a newsletter" card, a tab panel, a column), the holder is a component with a **placeholder**, and each card is its own component:
 - Before creating a card component, check whether an existing component already matches it (same panel, type, buttons); prefer extending it with an optional field over a near-duplicate.
-- Site-wide components (footer, header) usually need a **root placeholder** in the layout — that edits the layout file and the root-placeholder config, so ask first.
+- Site-wide components (footer, header) usually need a **root placeholder** in the layout. That edits `Layout.tsx` (every page) and needs placeholder settings in Sitecore, so ask first.
 - Their content is shared across pages: one shared datasource, not a copy per page (see [stack-targets.md](stack-targets.md)).
 
 ## Layouts shown side by side
@@ -38,7 +38,7 @@ When a design shows one frame holding interchangeable content (a footer with "a 
 Static decoration (icons that never change, dividers, background shapes, the panel color) is **not** content. Build it in code, or make it a rendering parameter if authors pick between options.
 
 ## Repeating content
-- **A list owned by this component** (stats, slides of one carousel, rows of one table): authors add, remove and reorder items. Default to the stack's list pattern — in JSS, a Content List field of a small item template (see [stack-targets.md](stack-targets.md)); in the Content SDK, child items read with a component query.
+- **A list owned by this component** (stats, slides of one carousel, rows of one table): authors add, remove and reorder items. Default to a Treelist field of a small `<Name>Item` template, with the items stored under the datasource. The layout delivers the selected items inline as `fields.<name>: [{ id, name, fields }]`, so no extra query is needed. Use a component query (see [stack-targets.md](stack-targets.md)) only when the items aren't picked by the author, e.g. "all children".
 - **Multilist / Treelist of shared items** — the items are shared content reused elsewhere (people, articles).
 - **Fixed field pairs** (`stat1Value`, `stat2Value`…) only when the count can never change; offer it as the alternative, not the default.
 
@@ -46,7 +46,7 @@ Static decoration (icons that never change, dividers, background shapes, the pan
 
 | The author's choice is… | Use |
 |---|---|
-| A different layout of the same content | A variant (named export in Content SDK / a param switch in JSS) |
+| A different layout of the same content | A variant (an extra named export of the component) |
 | A style toggle for any content (theme, alignment, spacing) | A rendering parameter |
 | Part of the content itself | A field |
 | Different content **and** layout | A separate component |

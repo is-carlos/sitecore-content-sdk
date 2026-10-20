@@ -1,6 +1,6 @@
 # TSX patterns
 
-The project's conventions (`CONVENTIONS.md`, `AGENTS.md`, `CLAUDE.md`) win over anything here. If the project ships the official Content SDK agent skills (`.agents/skills`), read the ones that apply too. Import paths and editing-state access differ per SDK — see [stack-targets.md](stack-targets.md).
+The project's conventions (`CONVENTIONS.md`, `AGENTS.md`, `CLAUDE.md`) win over anything here. If the project ships the official Content SDK agent skills (`.agents/skills`), read the ones that apply too. Import everything from `@sitecore-content-sdk/nextjs`, never from `@sitecore-jss/*`. Editing-state access differs per router — see [stack-targets.md](stack-targets.md).
 
 ## Props and fields
 - Type every field: `Field<string>` (text, rich text), `RichTextField`, `LinkField`, `ImageField`, `Field<boolean>`, `Field<string>` for dates.
@@ -8,16 +8,17 @@ The project's conventions (`CONVENTIONS.md`, `AGENTS.md`, `CLAUDE.md`) win over 
 - Heading level is set in TSX: `<Text tag="h2" field={fields.heading} />`.
 - A CTA renders as `<Link field={fields.link} className="…" />` — the link text comes from the field, not from a separate label field.
 - Use optional chaining on nested values and guard arrays: `(items ?? []).map(...)`.
-- **List keys:** key Content List items by position plus id — `` key={`${index}-${item.id ?? item.name}`} ``. In disconnected mode every item's `id` is the same placeholder string (`available-in-connected-mode`), so `key={item.id}` produces duplicate-key errors.
+- **List keys:** key list items (Treelist/Multilist) by position plus id — `` key={`${index}-${item.id ?? item.name}`} ``. Sample fields, stories and mock fixtures often reuse or omit ids, so `key={item.id}` alone produces duplicate-key errors.
 - **SVG images** (logos, icons): render with the plain `Image` component, not `NextImage` — the Next.js image optimizer rejects SVG by default.
 
 ## Placeholders (components that hold other components)
-- Render `<Placeholder name="<key>" rendering={rendering} />` and declare the key in the code-first definition (`placeholders: ['<key>']`) — without it Sitecore drops whatever authors place inside.
+- Render `<Placeholder name="<key>" rendering={rendering} />` and list the key in the report's template spec. Authors need placeholder settings for that key in Sitecore to add components to it.
 - To change layout when the slot is empty, check `rendering.placeholders?.['<key>']?.length`; keep the slot visible in editing mode so authors can add to it.
 - Scope any global element styles (e.g. `a { color: inherit }`) to the component's own part, never the root that wraps the placeholder, or they leak into the child components.
 
 ## Editing mode
-- With no datasource: use the project's existing pattern (`withDatasourceCheck()` in JSS; check `rendering.dataSource` in Content SDK App Router).
+- With no datasource: use the project's existing pattern — `withDatasourceCheck()` from `@sitecore-content-sdk/nextjs` or a `rendering.dataSource` check in the Pages Router; a `rendering.dataSource` check in the App Router.
+- `isEditing` comes from `page.mode.isEditing` (via `useSitecore()` or the `page` prop, per router).
 - **Value-or-editing:** wrap optional fields as `{(field?.value || isEditing) && <Text field={field} />}` so empty fields stay selectable in the editor but vanish on the live site. Links: test `field?.value?.href`; images: `field?.value?.src`.
 - Decorative overlays, gradients, and `::before` layers must not sit above editable fields — add `pointer-events: none`.
 

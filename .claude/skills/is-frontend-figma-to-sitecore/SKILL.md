@@ -1,10 +1,10 @@
 ---
 name: is-frontend-figma-to-sitecore
-description: Builds a Sitecore component (JSS or Content SDK, Next.js) from a Figma node URL — extracts the content from Figma, proposes the Sitecore fields, and generates the component with Sitecore field props (Text, RichText, Link, Image…), sample content, and a code-first definition where the project supports one. No Sitecore CLI needed. Use when the user runs /is-frontend-figma-to-sitecore <figma-url>, or asks to build a Sitecore component from a Figma design.
-compatibility: Claude Code. Requires the Figma MCP. A browser MCP is used for visual QA when available. Works with @sitecore-jss/sitecore-jss-nextjs or @sitecore-content-sdk/nextjs.
+description: Builds a Sitecore Content SDK (Next.js) component from a Figma node URL — extracts the content from Figma, proposes the Sitecore fields, and generates the component with Content SDK field components (Text, RichText, Link, Image…), sample content, Storybook stories, and a template spec for Sitecore. Content SDK only, not JSS. No Sitecore CLI needed. Use when the user runs /is-frontend-figma-to-sitecore <figma-url>, or asks to build a Sitecore component from a Figma design.
+compatibility: Claude Code. Requires the Figma MCP. A browser MCP is used for visual QA when available. Requires @sitecore-content-sdk/nextjs; JSS (@sitecore-jss/*) projects are not supported.
 metadata:
   author: Interactive Strategies
-  version: '0.5.0'
+  version: '0.6.0'
 ---
 
 # Figma to Sitecore
@@ -20,7 +20,9 @@ Do each step in order.
 
 ## Step 1 — Detect the project
 
-Follow the "Detect" table in [stack-targets.md](references/stack-targets.md). Report the result in one line, e.g. *"JSS 23 · Pages Router · code-first definitions · disconnected data · global CSS + Bootstrap · no Storybook"*. Read the conventions files it finds.
+Follow the "Detect" table in [stack-targets.md](references/stack-targets.md). Report the result in one line, e.g. *"Content SDK 2.4 · Pages Router · local mock (mock-data) · CSS modules · Storybook"*. Read the conventions files it finds.
+
+If the project uses JSS (`@sitecore-jss/*`) and not the Content SDK, stop here: this skill only builds Content SDK components. Say so and point the user to the JSS → Content SDK upgrade.
 
 
 ## Step 2 — Extract from Figma
@@ -59,11 +61,12 @@ Follow the outputs for the detected stack in [stack-targets.md](references/stack
 <kebab-name>/<Name>.tsx · <Name>.fields.ts · <Name>.styles.module.scss · <Name>.stories.ts
 ```
 
-- `<Name>.tsx`: renders every field with the SDK field components.
+- `<Name>.tsx`: renders every field with the field components from `@sitecore-content-sdk/nextjs`.
 - `<Name>.fields.ts`: the fields type, the extracted Figma values as sample fields, and an empty set.
-- `<Name>.styles.module.scss`: maps the Figma text styles and variables onto the project's tokens.
+- `<Name>.module.scss`: maps the Figma text styles and variables onto the project's tokens.
 - `<Name>.stories.ts`: `Default`, one per variant, `Empty`, `NoDatasource` (and `LongContent`), built from the fields file. If Storybook or `sass` is missing, ask to install them first.
-- The code-first definition and a disconnected sample route, when the project has them.
+- A sample route in the local mock (`mock-data/`), when the project has one.
+- The component map exclusions for `.stories` / `.fields` files, if they're missing (ask first).
 
 Only create or edit the files listed in the stack's output table. Anything else needs the user's OK first.
 
@@ -71,13 +74,13 @@ Only create or edit the files listed in the stack's output table. Anything else 
 ## Step 5 — Verify
 
 1. Run the stack's checks (lint, type-check/build). Fix what fails.
-2. Preview it (disconnected route, Storybook, or the static-render fallback in [stack-targets.md](references/stack-targets.md)) with the browser MCP at the Figma frame's width. Compare against the Figma screenshot, and measure element boxes against the extracted sizes: layout, spacing, type, color. Fix and reload — at most **3 rounds**. Stop any server you started; never restart or reconfigure one the user is running.
+2. Preview it (local mock route, Storybook, or the static-render fallback in [stack-targets.md](references/stack-targets.md)) with the browser MCP at the Figma frame's width. Compare against the Figma screenshot, and measure element boxes against the extracted sizes: layout, spacing, type, color. Fix and reload — at most **3 rounds**. Stop any server you started; never restart or reconfigure one the user is running.
 
 
 ## Step 6 — Report
 
 Tell the user, briefly:
 - The files created/changed (as links).
-- The final field table (name · type), which doubles as the Sitecore template spec.
-- What an author or developer still has to do (e.g. set the CTA link, create the template in Sitecore if the stack has no code-first definitions).
+- The template spec: the final field table (name · title · type · shared), rendering parameters, and placeholder keys.
+- What an author or developer still has to do: create the template, rendering and any placeholder settings in Sitecore (the Content SDK has no code-first definitions), set the CTA link, and so on.
 - Any visual differences left from Step 5.

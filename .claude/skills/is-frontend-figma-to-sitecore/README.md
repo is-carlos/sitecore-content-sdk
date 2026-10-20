@@ -1,11 +1,11 @@
 # is-frontend-figma-to-sitecore
 
-Builds a Sitecore component from a Figma node: extracts the content, proposes the Sitecore fields, and generates the component with Sitecore field props, sample content, and a code-first definition where the project supports one. No Sitecore CLI, no setup step, no cache files.
+Builds a Sitecore Content SDK component from a Figma node: extracts the content, proposes the Sitecore fields, and generates the component with Content SDK field components, sample content, Storybook stories, and a template spec for Sitecore. No Sitecore CLI, no setup step, no cache files.
 
-**Version:** 0.5.0 (draft)
+**Version:** 0.6.0 (draft)
 
 **Requirements:**
-- A Next.js head on `@sitecore-jss/sitecore-jss-nextjs` or `@sitecore-content-sdk/nextjs`
+- A Next.js head on `@sitecore-content-sdk/nextjs` (Pages or App Router). JSS (`@sitecore-jss/*`) is not supported.
 - Figma MCP
 - Browser MCP (optional, for visual QA)
 
@@ -15,12 +15,12 @@ Builds a Sitecore component from a Figma node: extracts the content, proposes th
 /is-frontend-figma-to-sitecore https://www.figma.com/design/<fileKey>/<name>?node-id=<id>
 ```
 
-1. **Detect** the stack (SDK, router, code-first definitions, styling, Storybook, conventions).
+1. **Detect** the stack (Content SDK version, router, local mock, styling, Storybook, conventions). Stops on JSS projects.
 2. **Extract** from Figma with a read-only script: text + text styles, hyperlinks, instances and their properties, images, prototype links, annotations, repeating groups.
 3. **Propose** a field table and ask only about the gaps (name, missing hrefs, parameters).
-4. **Generate** the component, definition, sample content, and styles for the detected stack.
-5. **Verify** with lint/build and a browser comparison against the Figma screenshot.
-6. **Report** the files, the field table, and what's left for authors.
+4. **Generate** the component, fields, styles, stories, and a sample route in the local mock when the project has one.
+5. **Verify** with lint/type-check and a browser comparison against the Figma screenshot.
+6. **Report** the files, the template spec, and what's left to create in Sitecore.
 
 ## Files
 
@@ -29,7 +29,7 @@ Builds a Sitecore component from a Figma node: extracts the content, proposes th
 | `SKILL.md` | The workflow |
 | `scripts/extract-content.js` | Read-only Figma Plugin API script run through `use_figma` |
 | `references/content-model.md` | Figma → field type mapping, naming, prop shapes |
-| `references/stack-targets.md` | Stack detection and what to generate for JSS vs Content SDK |
+| `references/stack-targets.md` | Stack detection, Content SDK outputs, preview options, field types |
 | `references/tsx-patterns.md` | Rendering, editing-mode, styling, and accessibility rules |
 
 ## What the extraction can't know
@@ -43,6 +43,14 @@ Field types are inferred, not read. Figma has no link `href`s unless the designe
 - Design-system modes (color, type, spacing, button, form)
 
 ## Changelog
+
+### 0.6.0
+- Content SDK only. Removed all JSS output (scaffold script, code-first definitions, `CommonFieldTypes`, disconnected YAML routes, `withDatasourceCheck`/`useSitecoreContext` from JSS, the JSS component-builder filter). Step 1 stops on JSS projects and points to the upgrade.
+- Content SDK Pages Router support alongside the App Router: `withDatasourceCheck()` from the Content SDK, `useSitecore().page.mode.isEditing`, component map exclusions for `.stories` / `.fields` files (the map generator registers every `.js`/`.ts`/`.tsx` under the component root).
+- Local preview through the project's GraphQL mock (`npm run dev:mock`, a route file in `mock-data/`) instead of disconnected mode.
+- Storybook decorator uses `SitecoreProvider` with a mock `Page`; editing stories set `page.mode` to edit. Notes `"moduleResolution": "bundler"` for Storybook 10.
+- Repeating content defaults to a Treelist of `<Name>Item` items, delivered inline by the layout. The template spec in the report now lists rendering parameters and placeholder keys.
+- Field type table with TS types and layout JSON shapes, replacing the JSS `CommonFieldTypes` table.
 
 ### 0.5.0
 - Containers and slots: components that hold other components (placeholder in TSX + definition, root placeholders in the layout, Storybook stories with child components, shared site-wide content referenced by `id`).
