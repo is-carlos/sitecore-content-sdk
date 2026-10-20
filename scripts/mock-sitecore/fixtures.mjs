@@ -7,6 +7,8 @@ import path from 'node:path';
  *   mock-data/<site>/<language>/dictionary.json       dictionary ({ [key]: phrase })
  *   mock-data/<site>/<language>/routes/_root.json     layout for "/"
  *   mock-data/<site>/<language>/routes/about/team.json layout for "/about/team"
+ *   mock-data/<site>/<language>/partial-design.json   renderings added to every page
+ *                                                      ({ placeholders: { [key]: rendering[] } })
  * Layout files hold the `rendered` layout JSON ({ sitecore: { context, route } }).
  */
 export const MOCK_DATA_DIR = path.resolve(process.env.SITECORE_MOCK_DATA_DIR || 'mock-data');
@@ -32,6 +34,7 @@ export const fixturePaths = {
   sites: () => resolveInside('sites.json'),
   dictionary: (site, language) => resolveInside(site, language, 'dictionary.json'),
   routesDir: (site, language) => resolveInside(site, language, 'routes'),
+  partialDesign: (site, language) => resolveInside(site, language, 'partial-design.json'),
   layout: (site, language, routePath) => {
     const route = routePath.toLowerCase().replace(/^\/+|\/+$/g, '');
     return resolveInside(site, language, 'routes', `${route || ROOT_ROUTE_FILE}.json`);

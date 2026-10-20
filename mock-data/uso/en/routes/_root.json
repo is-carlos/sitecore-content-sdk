@@ -45,6 +45,55 @@
             "componentName": "Title",
             "dataSource": "",
             "params": {}
+          },
+          {
+            "uid": "2d4f6a8c-1b3e-4c5d-9f7a-0b1c2d3e4f5a",
+            "componentName": "Stats",
+            "dataSource": "{7A1B2C3D-4E5F-4A6B-8C7D-9E0F1A2B3C4D}",
+            "params": {},
+            "fields": {
+              "Title": {
+                "value": "Your impact in action"
+              },
+              "Stats": [
+                {
+                  "id": "sample-113m",
+                  "name": "11.3M+",
+                  "fields": {
+                    "Value": {
+                      "value": "11.3M+"
+                    },
+                    "Label": {
+                      "value": "USO programs and services delivered each year"
+                    }
+                  }
+                },
+                {
+                  "id": "sample-250",
+                  "name": "250+",
+                  "fields": {
+                    "Value": {
+                      "value": "250+"
+                    },
+                    "Label": {
+                      "value": "USO centers serving the military community worldwide"
+                    }
+                  }
+                },
+                {
+                  "id": "sample-73m",
+                  "name": "~7.3M",
+                  "fields": {
+                    "Value": {
+                      "value": "~7.3M"
+                    },
+                    "Label": {
+                      "value": "visits to USO centers each year"
+                    }
+                  }
+                }
+              ]
+            }
           }
         ],
         "headless-footer": []

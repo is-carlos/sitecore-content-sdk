@@ -117,10 +117,34 @@ mock-data/
   <site>/<lang>/routes/_root.json          page at "/"
   <site>/<lang>/routes/about-us.json       page at "/about-us"
   <site>/<lang>/routes/about-us/team.json  page at "/about-us/team"
+  <site>/<lang>/partial-design.json        renderings added to every page (optional)
 ```
 
 Route paths are lowercased and trailing slashes are ignored, so `/About-Us/` reads
 `about-us.json`. `/` is stored as `_root.json`.
+
+### `partial-design.json`
+
+Renderings shared by every page of a site, such as the header and footer. Sitecore
+does this with partial designs: it merges their renderings into each page's layout
+response, so the head app sees them as ordinary placeholder content. The mock does
+the same. Before returning any route, it adds these renderings to the route's
+placeholders, ahead of the route's own.
+
+```jsonc
+{
+  "placeholders": {
+    "headless-footer": [
+      { "uid": "…", "componentName": "Footer", "dataSource": "{…}", "params": {}, "fields": { … } }
+    ]
+  }
+}
+```
+
+In this repo the `uso` site's Footer (with its `footer-cta` card) lives here, so every
+page gets it. Changes apply on the next request, with no restart. Snapshotted pages
+already contain their partial-design renderings, so don't add a `partial-design.json`
+for a captured site or those renderings appear twice.
 
 ### `sites.json`
 
@@ -208,7 +232,7 @@ production.
 
 | Query | Recognized by | Fixture | Response when missing |
 |---|---|---|---|
-| Layout (`client.getPage`) | `layout(site:"…", routePath:"…", language:"…")` | `<site>/<lang>/routes/<path>.json` | `layout: null`, so the app shows its 404 page. The server logs `no fixture for <site> <lang> <path>`. |
+| Layout (`client.getPage`) | `layout(site:"…", routePath:"…", language:"…")` | `<site>/<lang>/routes/<path>.json`, plus `<site>/<lang>/partial-design.json` merged in | `layout: null`, so the app shows its 404 page. The server logs `no fixture for <site> <lang> <path>`. |
 | Dictionary (`client.getDictionary`) | `dictionary(` | `<site>/<lang>/dictionary.json` | Empty dictionary. |
 | Site list (`sitecore-tools project build`) | `siteInfoCollection` | `sites.json` | Empty list. |
 | Site routes (static paths) | `routes(` | Lists the route files on disk | Empty list. |
@@ -231,6 +255,13 @@ browser-side GraphQL calls work too.
 
 Save it as `routes/_root.json`. The USO page in this repo is set up this way.
 
+### Put a component on every page
+
+Add its rendering to `partial-design.json` under the placeholder it belongs in
+(`headless-header`, `headless-main` or `headless-footer`). Keep it out of the route
+files, or it renders twice. In Sitecore, the same rendering goes in a partial design
+used by the site's page design.
+
 ### Add a component and see it with mock data
 
 1. Create it under `src/components/`, e.g. `src/components/title/Title.tsx`. While
@@ -239,10 +270,12 @@ Save it as `routes/_root.json`. The USO page in this repo is set up this way.
 2. Add a rendering with that `componentName` to a route file's placeholder, with the
    `fields` and `params` the component expects.
 3. Reload the page.
-4. Optionally, add a Storybook story under `src/stories/` (outside `src/components/`,
-   which the component map generator scans). See `src/stories/Title.stories.tsx`:
-   stories can pass a mock page through `parameters.sitecore.page`, and `play`
-   functions show PASS/FAIL in the Interactions panel.
+4. Optionally, add a Storybook story next to the component (`<Name>.stories.ts`).
+   `sitecore.cli.config.ts` excludes `*.stories.*` and `*.fields.*` from the component
+   map. See `src/components/single-cta/SingleCta.stories.ts`: stories can pass a mock
+   page through `parameters.sitecore.page` and child components through
+   `parameters.sitecore.componentMap`, and `play` functions show PASS/FAIL in the
+   Interactions panel.
 
 ### Test edge cases
 
@@ -288,7 +321,7 @@ mock, so add its entry back to `sites.json` afterwards (and decide which site ge
 
 | File | Role |
 |---|---|
-| `scripts/mock-sitecore/server.mjs` | The mock GraphQL server and its query handlers. |
+| `scripts/mock-sitecore/server.mjs` | The mock GraphQL server, its query handlers, and the partial-design merge. |
 | `scripts/mock-sitecore/snapshot.mjs` | Captures fixtures from Sitecore through the SDK services. |
 | `scripts/mock-sitecore/fixtures.mjs` | Shared fixture paths, JSON read/write, route listing, port. Refuses paths outside the fixture folder. |
 | `sitecore.config.ts` | The `NEXT_PUBLIC_SITECORE_MOCK` switch. |

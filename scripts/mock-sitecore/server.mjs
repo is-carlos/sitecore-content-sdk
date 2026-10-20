@@ -14,6 +14,24 @@ const DEFAULT_LANGUAGE = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en';
 const LAYOUT_QUERY =
   /\blayout\(\s*site:\s*"([^"]*)"\s*,\s*routePath:\s*"([^"]*)"(?:\s*,\s*language:\s*"([^"]*)")?\s*\)/;
 
+/**
+ * Adds the site's shared renderings (partial-design.json) to a page, the way Sitecore merges
+ * partial designs into every page's layout. Shared renderings come before the page's own.
+ * @param {object} rendered layout JSON ({ sitecore: { context, route } }), changed in place
+ * @param {string} site site name
+ * @param {string} language language code
+ */
+const applyPartialDesign = async (rendered, site, language) => {
+  const route = rendered?.sitecore?.route;
+  const partial = await readJson(fixturePaths.partialDesign(site, language));
+  if (!route || !partial?.placeholders) return;
+
+  route.placeholders = route.placeholders || {};
+  for (const [key, renderings] of Object.entries(partial.placeholders)) {
+    route.placeholders[key] = [...renderings, ...(route.placeholders[key] || [])];
+  }
+};
+
 /** Query handlers, checked in order. Each returns the GraphQL `data` payload. */
 const handlers = [
   {
@@ -24,8 +42,10 @@ const handlers = [
       const rendered = await readJson(fixturePaths.layout(site, language, routePath));
       if (!rendered) {
         console.log(`  no fixture for ${site} ${language} ${routePath} -> not found`);
+        return { layout: null };
       }
-      return { layout: rendered ? { item: { rendered } } : null };
+      await applyPartialDesign(rendered, site, language);
+      return { layout: { item: { rendered } } };
     },
   },
   {

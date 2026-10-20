@@ -1,0 +1,36 @@
+{
+  "sitecore": {
+    "context": {
+      "pageEditing": false,
+      "site": {
+        "name": "uso"
+      },
+      "pageState": "normal",
+      "editMode": "chromes",
+      "language": "en",
+      "itemPath": "/footer"
+    },
+    "route": {
+      "name": "footer",
+      "displayName": "Footer",
+      "databaseName": "master",
+      "itemId": "6b5a4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d",
+      "itemLanguage": "en",
+      "itemVersion": 1,
+      "templateName": "Page",
+      "fields": {
+        "Title": {
+          "value": "Footer"
+        },
+        "MetaTitle": {
+          "value": "Footer"
+        }
+      },
+      "placeholders": {
+        "headless-header": [],
+        "headless-main": [],
+        "headless-footer": []
+      }
+    }
+  }
+}

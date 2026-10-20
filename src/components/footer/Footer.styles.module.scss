@@ -1,0 +1,290 @@
+// Figma: USO Wireframes, "Footer Variations" > Footer-Base (node 2812:12615).
+// The project has no design tokens yet, so the Figma variables used here live in one place:
+// Grey/800, Grey/600, Grey/400, Grey/100, White, and the Eyebrow/LG, Body/MD, Body/XSM styles.
+// Fonts come from src/lib/fonts.ts (--font-poppins, --font-open-sans).
+
+.footer {
+  --footer-grey-800: #262626;
+  --footer-grey-600: #595959;
+  --footer-grey-400: #8c8c8c;
+  --footer-grey-100: #d9d9d9;
+  --footer-white: #ffffff;
+  --footer-font-body: var(--font-poppins), 'Poppins', sans-serif;
+  --footer-font-condensed: var(--font-open-sans), 'Open Sans Condensed', 'Arial Narrow', sans-serif;
+  // How far the CTA card reaches into the footer
+  --footer-cta-overlap: 100px;
+
+  box-sizing: border-box;
+
+  // The project has no global reset: Figma sizes include padding
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+// The CTA card sits above the dark base and overlaps its top
+.ctaSlot {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto calc(-1 * var(--footer-cta-overlap));
+}
+
+.base {
+  padding: 70px 100px;
+  background: var(--footer-grey-800);
+  color: var(--footer-grey-100);
+}
+
+.withCta {
+  padding-top: calc(70px + var(--footer-cta-overlap));
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+
+  // Both link columns share the space left by the center column
+  > nav {
+    flex: 1 1 0;
+  }
+}
+
+// Link columns: Eyebrow/LG
+.linksPrimary,
+.linksSecondary {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--footer-font-condensed);
+  font-stretch: 75%;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--footer-white);
+      text-decoration: underline;
+    }
+  }
+}
+
+.linksSecondary {
+  text-align: right;
+}
+
+.center {
+  display: flex;
+  flex: 0 0 290px;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 224px;
+}
+
+.logo {
+  display: block;
+  width: 115px;
+  height: auto;
+}
+
+// Address and phone: Body/MD
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  font-family: var(--footer-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.address {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.phone {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--footer-grey-600);
+  border-radius: 50%;
+  color: var(--footer-white);
+
+  svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    border-color: var(--footer-white);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: border-color 0.15s ease;
+  }
+}
+
+// Editing mode: an empty social link, labelled with its network
+.socialEmpty {
+  font-family: var(--footer-font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.socialLink,
+.linksPrimary a,
+.linksSecondary a,
+.phone,
+.legal a {
+  &:focus-visible {
+    outline: 2px solid var(--footer-white);
+    outline-offset: 3px;
+  }
+}
+
+// Legal row: Body/XSM
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 19px;
+  font-family: var(--footer-font-body);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--footer-grey-400);
+
+  > p,
+  > nav {
+    flex: 1 1 0;
+  }
+}
+
+.copyright {
+  margin: 0;
+}
+
+.disclaimer {
+  margin: 0;
+  text-align: center;
+}
+
+.bottom > .disclaimer {
+  flex: 0 0 314px;
+}
+
+.legal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 19px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--footer-grey-100);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Not in the wireframe: stacked, centered columns on narrow screens.
+@media (max-width: 1023px) {
+  .base {
+    padding-inline: 24px;
+  }
+
+  .top,
+  .bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  // Same spacing as between links, so the two stacked lists read as one
+  .top {
+    gap: 30px;
+  }
+
+  .top > nav,
+  .bottom > p,
+  .bottom > nav {
+    flex: none;
+  }
+
+  .linksSecondary {
+    text-align: center;
+  }
+
+  .center {
+    flex: none;
+    order: -1;
+  }
+
+  .bottom > .disclaimer {
+    flex: none;
+    max-width: 314px;
+  }
+
+  .legal {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

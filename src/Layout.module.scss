@@ -1,0 +1,21 @@
+// Vertical rhythm for the page's main placeholder (headless-main).
+// Components don't add outer spacing themselves, so the space between sections lives here.
+
+.content {
+  --section-spacing: 100px;
+
+  // Space after the last section, before the footer
+  padding-bottom: var(--section-spacing);
+
+  // Every rendering's root has the `component` class. `~` (not `+`) skips the
+  // editing markers Page Builder puts between renderings.
+  > :global(.component) ~ :global(.component) {
+    margin-top: var(--section-spacing);
+  }
+}
+
+@media (max-width: 767px) {
+  .content {
+    --section-spacing: 60px;
+  }
+}

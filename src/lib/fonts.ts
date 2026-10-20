@@ -2,7 +2,11 @@ import { Open_Sans, Poppins } from 'next/font/google';
 
 // Web fonts from the USO designs: Poppins (headings, body) and Open Sans Condensed
 // (eyebrows, buttons), which is the Open Sans variable font at a narrow width.
-export const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'], display: 'swap' });
+export const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  display: 'swap',
+});
 
 export const openSans = Open_Sans({ subsets: ['latin'], axes: ['wdth'], display: 'swap' });
 
