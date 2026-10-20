@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "next-dev",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "PORT=3001 npm run dev"],
+      "port": 3001,
+      "autoPort": false
+    },
+    {
+      "name": "storybook",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["storybook", "dev", "-p", "6006", "--no-open", "--disable-telemetry"],
+      "port": 6006
+    }
+  ]
+}

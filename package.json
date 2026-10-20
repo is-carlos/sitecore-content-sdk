@@ -45,7 +45,12 @@
     "eslint-plugin-react-hooks": "5.2.0",
     "npm-run-all2": "~8.0.1",
     "prettier": "^3.6.2",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "storybook": "^10.6.3",
+    "@storybook/nextjs": "^10.6.3",
+    "@storybook/addon-a11y": "^10.6.3",
+    "@storybook/addon-docs": "^10.6.3",
+    "eslint-plugin-storybook": "^10.6.3"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production npm-run-all --serial sitecore-tools:generate-map sitecore-tools:build next:build",
@@ -57,6 +62,8 @@
     "sitecore-tools:generate-map:watch": "sitecore-tools project component generate-map --watch",
     "sitecore-tools:build": "sitecore-tools project build",
     "dev": "cross-env NODE_ENV=development npm-run-all --serial sitecore-tools:generate-map sitecore-tools:build --parallel next:dev sitecore-tools:generate-map:watch",
-    "start": "cross-env-shell NODE_ENV=production npm-run-all --serial build next:start"
+    "start": "cross-env-shell NODE_ENV=production npm-run-all --serial build next:start",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }
