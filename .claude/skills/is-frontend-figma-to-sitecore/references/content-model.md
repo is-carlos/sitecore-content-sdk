@@ -1,55 +1,55 @@
 # Content model: Figma → Sitecore fields
 
 ## Naming
-- **Field name:** match the casing that existing components in the project use (e.g. `Title` in many Content SDK projects, `heading` in others). If there are none, use no-space PascalCase. Never use spaces — components read `fields.<name>` directly.
-- **Field title** (author label, when the target supports it): the friendly name, e.g. `Primary CTA`.
-- **Derive names from meaning, not layers.** Layer names are usually generic (`Text`, `Frame 27`). Use, in order: a `Content` annotation, a component property name, the text style (`Eyebrow/LG` → `eyebrow`, `Heading/H2` → `heading`, `Body/LG` → `body`), the component name (`Button_Primary` → `link` / `primaryCta`).
-- Avoid names that collide with standard Sitecore fields (`name`, `created`, `icon`, anything starting with `__`).
+- **Field name**: match the casing the project's components already use (e.g. `Title`, `PrimaryCTA`). No components yet → PascalCase without spaces. Components read `fields.<Name>` directly, so the name in code must equal the Sitecore field name.
+- **Field title** (the author-facing label, in the template spec): the friendly name, e.g. `Primary CTA`.
+- **Derive names from meaning, not layers.** Layer names are usually generic (`Text`, `Frame 27`). Use, in order: a Content/Development annotation, a component property name, the text style (`Eyebrow/LG` → `Eyebrow`, `Heading/H2` → `Title`, `Body/LG` → `Text`), the component name (`Button_Primary` → `PrimaryCTA`).
+- Avoid names that clash with standard Sitecore fields (`Name`, `Created`, `Icon`, anything starting with `__`).
 
 ## Extractor `hint` → field type
 
-| `hint` / signal | Field type | Prop shape | Notes |
+| `hint` / signal | Field type | TS type | Notes |
 |---|---|---|---|
-| `text` | Single-Line Text | `{ value: 'Text' }` | Heading **level** is not content — set it in TSX. |
-| `rich-text` (lists, mixed styles, inline links, line breaks) | Rich Text | `{ value: '<p>…</p>' }` | Plain paragraph body copy is usually Rich Text too — authors expect bold/links. Ask if unsure. |
-| `link` (instance named button/btn/cta/link, or a hyperlink) | General Link | `{ value: { href, text, target, linktype } }` | The `link-text` inside it is the link's `text`, not its own field. `href` comes from a hyperlink or prototype URL, else it is left empty for authors. |
-| `image` | Image | `{ value: { src, alt, width, height } }` | Alt comes from the media item. |
-| `image?` (a sizeable plain filled box) | Image, usually | as above | Wireframes draw images as grey boxes. Confirm it's an image, not decoration. |
-| Boolean component property an author toggles | Checkbox | `{ value: true }` | |
-| Date-looking text | Date | `{ value: '2026-10-20T00:00:00Z' }` | Confirm with the user. |
-| Downloadable document | File | `{ value: { src, title } }` | |
-| `repeats` group (same component, or same structure under different layer names) | Treelist / Multilist of items | `[{ id, name, fields: { … } }]` | See below. One item template; its fields come from one repeated frame. |
-| `optional` element that is **off** in this instance (e.g. a hidden text button) | The element's own type (often General Link), optional | as above | The design system allows it here; ask whether to support it. Render only when it has a value. |
-| `stroke` on a frame | — (styling) | — | A rule or border. `INSIDE` strokes sit within the padding: subtract the stroke width from that side's CSS padding. |
-| `unusedProps` on an instance | — | — | A boolean property no layer uses: a design-system leftover. Not a field; mention it, don't build it. |
-| `input` + `input-placeholder` | Single-Line Text per placeholder (and one for the submit label) | `{ value: 'Enter your email…' }` | A form. The inputs themselves are code; authors edit their placeholder/label text. Ask what submit does — there is rarely a backend yet. |
+| `text` | Single-Line Text | `Field<string>` | Heading level is code, not content. |
+| `rich-text` (lists, mixed styles, inline links, line breaks) | Rich Text | `RichTextField` | Plain body paragraphs are usually Rich Text too — authors expect bold and links. Ask if unsure. |
+| `link` (button/btn/cta/link instance, or a hyperlink) | General Link | `LinkField` | The `link-text` inside it is the link's text, not its own field. `href` from a hyperlink or prototype URL, else empty for authors. |
+| `image` | Image | `ImageField` | Alt comes from the media item. |
+| `image?` (a sizeable plain filled box) | Image, usually | `ImageField` | Wireframes draw images as grey boxes. Confirm it's not decoration. |
+| Boolean component property an author toggles | Checkbox | `Field<boolean>` | |
+| Date-looking text | Date / Datetime | `Field<string>` | Render with `DateField`. Confirm. |
+| Downloadable document | File | `FileField` | |
+| Number the author edits (a count, a stat) | Number | `Field<number>` | Stats shown with units ("98%") are usually Single-Line Text. Ask. |
+| `repeats` group | Treelist / Multilist | `Item[]` | See "Repeating content". |
+| `optional` element switched off in this instance | the element's own type, optional | | The design system allows it here; ask whether to support it. Render only when it has a value. |
+| `stroke` | — (styling) | | `INSIDE` strokes sit within the padding: subtract the width from that side's padding. |
+| `unusedProps` | — | | A boolean property no layer uses: design-system leftover. Mention it, don't build it. |
+| `input` + `input-placeholder` | Single-Line Text per label/placeholder (and the submit label) | `Field<string>` | A form: the controls are code (form mode styles). Ask what submit does. |
 
-## Containers and slots
-
-When a design shows one frame holding interchangeable content (a footer with "a CTA or a newsletter" card, a tab panel, a column), the holder is a component with a **placeholder**, and each card is its own component:
-- Before creating a card component, check whether an existing component already matches it (same panel, type, buttons); prefer extending it with an optional field over a near-duplicate.
-- Site-wide components (footer, header) usually need a **root placeholder** in the layout. That edits `Layout.tsx` (every page) and needs placeholder settings in Sitecore, so ask first.
-- Their content is shared across pages: one shared datasource, not a copy per page (see [stack-targets.md](stack-targets.md)).
-
-## Layouts shown side by side
-
-`layouts` lists copies of one component placed next to each other on the canvas, with what each copy overrides (`visible` = a layer hidden, `textAlignHorizontal`, padding, width…). They show layouts the component must support, not repeating content. Compare each copy against the component's own variants: designers sometimes override a variant by hand instead of using the matching one, and the two can disagree (e.g. different gutters) — ask which is right. Then decide how authors get each layout: automatically from the content (e.g. no image → centered) when the difference follows from a field, otherwise a variant or a rendering parameter.
-
-Static decoration (icons that never change, dividers, background shapes, the panel color) is **not** content. Build it in code, or make it a rendering parameter if authors pick between options.
-
-## Repeating content
-- **A list owned by this component** (stats, slides of one carousel, rows of one table): authors add, remove and reorder items. Default to a Treelist field of a small `<Name>Item` template, with the items stored under the datasource. The layout delivers the selected items inline as `fields.<name>: [{ id, name, fields }]`, so no extra query is needed. Use a component query (see [stack-targets.md](stack-targets.md)) only when the items aren't picked by the author, e.g. "all children".
-- **Multilist / Treelist of shared items** — the items are shared content reused elsewhere (people, articles).
-- **Fixed field pairs** (`stat1Value`, `stat2Value`…) only when the count can never change; offer it as the alternative, not the default.
+Layout JSON shapes, for sample fields: Single-Line/Multi-Line/Rich Text `{ value: '…' }`; General Link `{ value: { href, text, linktype: 'external', target: '' } }`; Image `{ value: { src, alt, width, height } }`; File `{ value: { src, title } }`; Number `{ value: 3 }`; Checkbox `{ value: true }`; Date `{ value: '2026-10-20T00:00:00Z' }`; Treelist/Multilist `[{ id, name, fields: { … } }]`; Droptree/Droplink `{ id, name, fields: { … } }`.
 
 ## Variants, parameters, fields
 
 | The author's choice is… | Use |
 |---|---|
-| A different layout of the same content | A variant (an extra named export of the component) |
-| A style toggle for any content (theme, alignment, spacing) | A rendering parameter |
-| Part of the content itself | A field |
+| A different layout of the same content | A variant (named export + Headless Variant item) |
+| A style for any content (theme, alignment, spacing) | A rendering parameter (theme → the Styles parameter with a token-layer class) |
+| Part of the content | A field |
 | Different content **and** layout | A separate component |
 
+## Layouts shown side by side
+
+`layouts` lists copies of one component placed next to each other, with what each overrides (hidden layers, alignment, padding, width…). They are layouts to support, not repeating content. Compare each copy with the component's own variants — designers sometimes override a variant by hand instead of using the matching one, and the two can disagree; ask which is right. Then decide how authors get each layout: automatically from the content (no image → centered) when it follows from a field, otherwise a variant or a rendering parameter.
+
+Static decoration (icons that never change, dividers, background shapes) is not content: build it in code, or make it a parameter if authors choose between options.
+
+## Containers and slots
+
+A frame holding interchangeable content (a column, a tab panel, a footer that holds "a CTA or a newsletter" card) is a component with a **placeholder**; each card is its own component. Before creating a card component, check whether an existing one already matches; prefer extending it with an optional field. Site-wide containers (header, footer) usually need a root placeholder in `Layout.tsx`, which changes every page — ask first, and list the placeholder settings needed in Sitecore.
+
+## Repeating content
+- **A list owned by this component** (stats, slides, rows): default to a Treelist of a small `<Name>Item` template, items stored under the datasource. The layout delivers them inline as `fields.<Name>: [{ id, name, fields }]`. Use component-level data only when the author doesn't pick the items (e.g. "all children"), and ask first.
+- **Multilist / Treelist of shared items** — when the items are shared content reused elsewhere (people, articles).
+- **Fixed field pairs** (`Stat1Value`, `Stat2Value`…) only when the count can never change; offer it as the alternative, not the default.
+
 ## Sample values
-Use the text extracted from Figma as the sample/mock content, verbatim — including placeholder copy like "Lorem ipsum". Links get the extracted text and `href: '#'` (or the real URL if Figma had one).
+Use the Figma text as sample content, verbatim — including placeholder copy like "Lorem ipsum". Links get the extracted text and `href: '#'` (or the real URL if Figma has one). Images use a file in `public/` if the project has suitable ones; otherwise ask whether to export the Figma image (`get_screenshot` on the image node) into `public/showcase/`.

@@ -1,86 +1,98 @@
 ---
 name: is-frontend-figma-to-sitecore
-description: Builds a Sitecore Content SDK (Next.js) component from a Figma node URL — extracts the content from Figma, proposes the Sitecore fields, and generates the component with Content SDK field components (Text, RichText, Link, Image…), sample content, Storybook stories, and a template spec for Sitecore. Content SDK only, not JSS. No Sitecore CLI needed. Use when the user runs /is-frontend-figma-to-sitecore <figma-url>, or asks to build a Sitecore component from a Figma design.
-compatibility: Claude Code. Requires the Figma MCP. A browser MCP is used for visual QA when available. Requires @sitecore-content-sdk/nextjs; JSS (@sitecore-jss/*) projects are not supported.
+description: Builds the design system and components of a Sitecore Content SDK (Next.js) head app from a Figma file — a global SCSS token layer (colors, typography, spacing, buttons, forms) generated from Figma variables and styles, CSS-module components that render Sitecore fields with the Content SDK field components, Storybook stories, and dev-only showcase pages. Content SDK only, not JSS. Use when the user runs /is-frontend-figma-to-sitecore <mode>, or asks to build Sitecore design tokens or a Sitecore component from a Figma design.
+compatibility: Claude Code or Cursor Agent mode. Requires the Figma MCP. A browser MCP is used for visual QA when available. Requires @sitecore-content-sdk/nextjs (Pages Router or App Router); JSS (@sitecore-jss/*) projects are not supported.
 metadata:
   author: Interactive Strategies
-  version: '0.6.0'
+  version: 1.0.0
 ---
+
 
 # Figma to Sitecore
 
 ```
-/is-frontend-figma-to-sitecore <figma-node-url>
+/is-frontend-figma-to-sitecore <mode> [argument]
 ```
 
-One component per run. If no URL is given, ask for a Figma URL that includes `node-id`.
-
-Do each step in order.
+Do each step **in order**. Do not skip or combine steps.
 
 
-## Step 1 — Detect the project
+## Step 1 — Mode choice
 
-Follow the "Detect" table in [stack-targets.md](references/stack-targets.md). Report the result in one line, e.g. *"Content SDK 2.4 · Pages Router · local mock (mock-data) · CSS modules · Storybook"*. Read the conventions files it finds.
+The first argument is `<mode>`. It must be **one** of:
 
-If the project uses JSS (`@sitecore-jss/*`) and not the Content SDK, stop here: this skill only builds Content SDK components. Say so and point the user to the JSS → Content SDK upgrade.
+| Mode      | Aliases                    | Reference file                                     | What it does |
+|-----------|----------------------------|----------------------------------------------------|--------------|
+| help      | list, h                    | [mode-help.md](references/mode-help.md)            | Describes the skill, its modes and the recommended order. |
+| init      | i, initialize              | [mode-init.md](references/mode-init.md)            | First-time setup: Figma caches, token-layer skeleton, global import, Storybook wiring. Runs `variables`. |
+| variables | v, styles                  | [mode-variables.md](references/mode-variables.md)  | Re-fetches the Figma variables and styles into the project cache. |
+| color     | c, colors, colour, colours | [mode-color.md](references/mode-color.md)          | Color primitives, semantic tokens, color themes and gradients. |
+| type      | t, typography              | [mode-type.md](references/mode-type.md)            | Font families, type tokens, text-style mixins and rich-text styles. |
+| spacing   | s                          | [mode-spacing.md](references/mode-spacing.md)      | Spacing primitives and responsive semantic spacing tokens. |
+| button    | b, buttons                 | [mode-button.md](references/mode-button.md)        | Button mixins and global button classes, with every state. |
+| form      | f, forms                   | [mode-form.md](references/mode-form.md)            | Form element mixins and global form styles, with every state. |
+| component | comp, block                | [mode-component.md](references/mode-component.md)  | Creates or updates one Sitecore component from a Figma node. Optional argument: a Figma node URL or a component name. |
+| page      | p, showcase                | [mode-page.md](references/mode-page.md)            | Creates or updates a dev-only showcase page for one component. Optional argument: the component name. |
 
-
-## Step 2 — Extract from Figma
-
-From the URL take the `fileKey` and the `nodeId` (`node-id=2812-11260` → `2812:11260`).
-
-1. Load the `figma-use` skill, then call `create_session` for the file.
-2. Run [scripts/extract-content.js](scripts/extract-content.js) with `use_figma`, replacing `__NODE_ID__`. It is read-only.
-3. Call `get_screenshot` on the node and look at it.
-4. Call `get_variable_defs` on the node for the tokens it uses.
-
-If the root frame is much larger than its content, or the content is a single instance, say so — the component is that instance, not the empty canvas around it. If `layouts` lists several copies of one component, they are layouts to support (see content-model.md), not repeating content.
-
-
-## Step 3 — Propose the content model
-
-Using [content-model.md](references/content-model.md), turn the extraction into one table and show it:
-
-| Field | Type | Sample value (from Figma) | Source (layer / text style) |
-|---|---|---|---|
-
-Below it, list only what Figma could not answer, and ask about those in **one** `AskUserQuestion` round (up to 4 questions). Typical gaps:
-- The component name (default: the Figma frame/component name in PascalCase).
-- Field names, when the inference is weak.
-- Link `href`s Figma didn't have (default: empty for authors to fill, `#` in sample content).
-- Whether a visual option (background, alignment) is static or a rendering parameter.
-
-Everything else, decide and state it. Do not write files until the user has answered.
+- Only **one** mode per command. A Figma URL with no mode means `component`.
+- A missing or unrecognized mode runs `help`.
 
 
-## Step 4 — Generate
+## Step 2 — Detect the project
 
-Follow the outputs for the detected stack in [stack-targets.md](references/stack-targets.md) and the rules in [tsx-patterns.md](references/tsx-patterns.md). Every component gets its own folder:
+Skip for `help`.
 
-```
-<kebab-name>/<Name>.tsx · <Name>.fields.ts · <Name>.styles.module.scss · <Name>.stories.ts
-```
+Follow [stack-and-routers.md](references/stack-and-routers.md) → "Detect". Report the result in one line, e.g. *"Content SDK 2.4.1 · Pages Router · styles root src/styles · tokens: color, type · Storybook 10 · local mock"*. Read the conventions files it lists; their rules win over this skill.
 
-- `<Name>.tsx`: renders every field with the field components from `@sitecore-content-sdk/nextjs`.
-- `<Name>.fields.ts`: the fields type, the extracted Figma values as sample fields, and an empty set.
-- `<Name>.module.scss`: maps the Figma text styles and variables onto the project's tokens.
-- `<Name>.stories.ts`: `Default`, one per variant, `Empty`, `NoDatasource` (and `LongContent`), built from the fields file. If Storybook or `sass` is missing, ask to install them first.
-- A sample route in the local mock (`mock-data/`), when the project has one.
-- The component map exclusions for `.stories` / `.fields` files, if they're missing (ask first).
-
-Only create or edit the files listed in the stack's output table. Anything else needs the user's OK first.
+If the project uses JSS (`@sitecore-jss/*`) and not the Content SDK, **stop**: say this skill only supports the Content SDK and point to the JSS → Content SDK upgrade guide (or the project's `content-sdk-upgrade-assistant` skill).
 
 
-## Step 5 — Verify
+## Step 3 — Figma caches
 
-1. Run the stack's checks (lint, type-check/build). Fix what fails.
-2. Preview it (local mock route, Storybook, or the static-render fallback in [stack-targets.md](references/stack-targets.md)) with the browser MCP at the Figma frame's width. Compare against the Figma screenshot, and measure element boxes against the extracted sizes: layout, spacing, type, color. Fix and reload — at most **3 rounds**. Stop any server you started; never restart or reconfigure one the user is running.
+Skip for `help` and `init` (init creates them).
+
+Follow [figma-cache.md](references/figma-cache.md): use the cached URLs before asking for one, and check the variables cache before any design-system or component mode.
 
 
-## Step 6 — Report
+## Step 4 — Run the mode
+
+Open the reference file for the chosen mode and follow it. Every mode that writes files ends its work in this step with a **proposal**: a table of the files it will create or edit and, per file, what changes. The shared rules live in:
+
+- [token-layer.md](references/token-layer.md) — files, naming, helpers, themes. Every mode follows it.
+- [component-patterns.md](references/component-patterns.md) — component code (component and page modes).
+- [content-model.md](references/content-model.md) — Figma → Sitecore fields (component mode).
+- [storybook.md](references/storybook.md) — stories and Storybook wiring.
+
+**Ambiguity:** do not assume. Ask, ideally multiple choice, in as few rounds as possible (batch up to 4 questions per round).
+
+
+## Step 5 — Confirm
+
+Show the proposal and ask: *"Ready to build?"* Do not create or edit any file until the user confirms. (`help` and `variables` don't need this step; `variables` only writes its cache files.)
+
+
+## Step 6 — Build
+
+- Create or edit **only** the files in the approved proposal. Anything else needs the user's OK first.
+- Never edit `.env*`, `.sitecore/*` (generated), `node_modules/`, `.next/`.
+- If part of the work is too hard or uncertain, leave a `// TODO(figma-to-sitecore): …` comment and list it in the report.
+- New files must match the repo's formatting: run `npx prettier --write <files>` (or `npx eslint --fix`) on them.
+
+
+## Step 7 — Verify
+
+1. Run `npm run lint` and `npx tsc --noEmit`. Fix what fails in the files you touched.
+2. Run the token check from [token-layer.md](references/token-layer.md) → "Verify" on every `.scss` file you touched.
+3. If the `is-frontend-playbook` skill is available, check the work against it.
+4. Visual QA, when the mode has something to look at: Storybook first, else the component's showcase page (see [storybook.md](references/storybook.md) and [mode-page.md](references/mode-page.md)). Use the browser MCP at the Figma frame's width, compare against the Figma screenshot, fix and reload — at most **3 rounds**. If Storybook isn't running, ask the user to start it or for its URL; never restart or reconfigure a server the user is running, and stop any server you started.
+
+Never run `npm run build` into a `.next` folder a running dev server is using.
+
+
+## Step 8 — Report
 
 Tell the user, briefly:
-- The files created/changed (as links).
-- The template spec: the final field table (name · title · type · shared), rendering parameters, and placeholder keys.
-- What an author or developer still has to do: create the template, rendering and any placeholder settings in Sitecore (the Content SDK has no code-first definitions), set the CTA link, and so on.
-- Any visual differences left from Step 5.
+- The files created or changed, as links.
+- What still has to be done by hand: TODOs, values Figma didn't have (magenta tokens), and Sitecore items to create (component mode: the template spec).
+- Visual differences left from Step 7.
+- The suggested next mode (see the recommended order in [mode-help.md](references/mode-help.md)).
