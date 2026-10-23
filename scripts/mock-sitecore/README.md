@@ -10,6 +10,7 @@ write them by hand.
 - [Commands](#commands)
 - [Configuration](#configuration)
 - [Fixture files](#fixture-files)
+- [Keeping fixtures in step with field types](#keeping-fixtures-in-step-with-field-types)
 - [Query handling](#query-handling)
 - [Common tasks](#common-tasks)
 - [Troubleshooting](#troubleshooting)
@@ -65,8 +66,10 @@ The app code (pages, proxy, components) is unchanged. Only the GraphQL endpoint 
 
 | Command | What it does |
 |---|---|
-| `npm run dev:mock` | Starts the mock server and `npm run dev` together, with `NEXT_PUBLIC_SITECORE_MOCK=true`. |
+| `npm run dev:mock` | Starts the mock server, the field sync watcher and `npm run dev` together, with `NEXT_PUBLIC_SITECORE_MOCK=true`. |
 | `npm run mock:server` | Starts only the mock server on port 4000. Useful when running the app another way. |
+| `npm run mock:sync` | Checks every fixture against the components' field types. Exits 1 when they drifted. Add `-- --write` to fix. |
+| `npm run mock:sync:watch` | Re-syncs on every component change and gives new components a page. Part of `dev:mock`. |
 | `npm run mock:snapshot -- <options>` | Captures content from Sitecore into `mock-data/`. Reads `.env` and `.env.local`. |
 
 ### Snapshot options
@@ -98,7 +101,8 @@ are listed and skipped.
 | Variable | Used by | Purpose |
 |---|---|---|
 | `NEXT_PUBLIC_SITECORE_MOCK` | app | `true` switches `sitecore.config.ts` to the mock. Set by `npm run dev:mock`; you don't need it in `.env.local`. It's a `NEXT_PUBLIC_` variable so the browser bundle uses the mock too. |
-| `SITECORE_MOCK_DATA_DIR` | server, snapshot | Fixture folder. Default `mock-data` (relative to the project root). |
+| `SITECORE_MOCK_DATA_DIR` | server, snapshot, sync | Fixture folder. Default `mock-data` (relative to the project root). |
+| `SITECORE_COMPONENT_ROOT` | sync | Component folder whose field types the sync reads. Default `src/components`. |
 | `NEXT_PUBLIC_DEFAULT_LANGUAGE` | server | Language used when a layout query has none. Default `en`. |
 | `SITECORE_EDGE_CONTEXT_ID` | snapshot | Edge credentials to snapshot from. |
 | `SITECORE_API_HOST` + `SITECORE_API_KEY` | snapshot | Alternative: snapshot from a local CM (`NEXT_PUBLIC_` variants also work). |
@@ -226,6 +230,45 @@ production.
   images. For other field types, snapshot a real page that uses them and copy its shape.
 - Ignore the `uid` and GUID values: any unique string works.
 
+## Keeping fixtures in step with field types
+
+`sync-fields.mjs` reads each component's `<Name>Fields` type with the TypeScript compiler
+and checks every `<Name>` rendering in the fixtures against it, so a field added to a type
+shows up in mock data without hand-editing JSON.
+
+- **Where the type lives:** `<Name>.fields.ts`, else `<Name>.tsx`, next to the component.
+  The component name is the file name, as in the component map.
+- **Field kinds** come from the Content SDK types: `Field<string>`, `Field<number>`,
+  `Field<boolean>`, `RichTextField`, `LinkField`, `ImageField`, `FileField`, arrays of
+  items with `fields` (Multilist / Treelist) and single items (Droplink / Droptree).
+- **Values for new fields** come from the `<name>SampleFields` export of the fields file
+  (the Figma sample content Storybook also uses), else a placeholder of the right shape:
+  `Sample <Field>` text, a `#` link, an offline SVG image, three list items.
+- **Existing values are kept.** Only additions and renames are applied by `--write`.
+
+| Mark | Meaning | Applied by |
+|---|---|---|
+| `+` | The type has a required field the fixture lacks | `--write` |
+| `~` | One field missing and one unknown field of the same shape: treated as a rename, value kept | `--write` |
+| `-` | The fixture has a field the type doesn't | `--prune` |
+| `!` | A value doesn't have its type's shape, e.g. text where a link is expected | `--prune` (replaced) |
+
+```bash
+npm run mock:sync                                  # report only; exit 1 on drift (CI, pre-commit)
+npm run mock:sync -- --write                       # add missing fields, apply renames
+npm run mock:sync -- --write --prune               # also drop unknown fields, fix wrong shapes
+npm run mock:sync -- --write --scaffold            # also add /components/<kebab-name> pages
+```
+
+`--scaffold` gives every component that no fixture uses a one-rendering page at
+`routes/components/<kebab-name>.json`, for each site and language in `sites.json`. It
+never overwrites an existing page; delete the file to regenerate it from the latest
+sample fields.
+
+During `npm run dev:mock` the watcher (`--watch --scaffold`) re-runs on every change in
+`src/components`, so a new field or a new component appears on the next page reload.
+Renderings without a datasource are skipped: they have no datasource fields.
+
 ## Query handling
 
 `server.mjs` checks queries in this order. The first match wins.
@@ -323,8 +366,9 @@ mock, so add its entry back to `sites.json` afterwards (and decide which site ge
 |---|---|
 | `scripts/mock-sitecore/server.mjs` | The mock GraphQL server, its query handlers, and the partial-design merge. |
 | `scripts/mock-sitecore/snapshot.mjs` | Captures fixtures from Sitecore through the SDK services. |
+| `scripts/mock-sitecore/sync-fields.mjs` | Checks and updates fixtures against the components' field types. |
 | `scripts/mock-sitecore/fixtures.mjs` | Shared fixture paths, JSON read/write, route listing, port. Refuses paths outside the fixture folder. |
 | `sitecore.config.ts` | The `NEXT_PUBLIC_SITECORE_MOCK` switch. |
-| `package.json` | `dev:mock`, `mock:server` and `mock:snapshot` scripts. |
+| `package.json` | `dev:mock`, `mock:server`, `mock:sync`, `mock:sync:watch` and `mock:snapshot` scripts. |
 | `mock-data/` | The fixtures. |
 | `.claude/launch.json` | `next-dev-mock` entry for Claude's browser preview (port 3001). |
