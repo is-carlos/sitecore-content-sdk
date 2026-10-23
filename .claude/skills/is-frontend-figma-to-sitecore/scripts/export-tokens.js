@@ -13,11 +13,17 @@
 //   collections       — name, modes and variable count per dumped collection
 //   remoteOnly        — true when the file has no local collections (variables live in a library file)
 //   counts            — number of text, paint and effect styles
+//   unlistedVariables — variables that aliases or styles reference but that no local collection
+//                       lists: `deleted` (still resolvable by id, but removed from its collection),
+//                       `library` (from a library file) or `missing` (can't be resolved). Each has
+//                       `usedBy`, the variables and styles that reference it.
 //   variablesMarkdown — one "## <collection>" table per collection, one column per mode. Colors are
-//                       hex (RRGGBB, or RRGGBBAA with alpha), aliases are "→ Collection/Variable".
+//                       hex (RRGGBB, or RRGGBBAA with alpha), aliases are "→ Collection/Variable",
+//                       followed by "(deleted)" / "(library)" when the target is unlisted.
 //   stylesMarkdown    — "## Text Styles", "## Color Styles", "## Effect Styles" tables. Sizes in px,
 //                       line height / letter spacing with their unit (px or %), colors in hex,
-//                       bound variables as "→ Collection/Variable".
+//                       bound variables as "→ Collection/Variable" (marked the same way), linear
+//                       gradients with their CSS angle ("linear-gradient(141deg, …)").
 
 const PART = '__PART__';
 const COLLECTION = '__COLLECTION__';
@@ -34,7 +40,10 @@ const cell = (s) => String(s === undefined || s === null ? '' : s).replace(/\|/g
 
 const all = await figma.variables.getLocalVariableCollectionsAsync();
 const collectionNames = new Map(all.map((c) => [c.id, c.name]));
+const listedIds = new Set(all.flatMap((c) => c.variableIds));
 const variables = new Map();
+// name → { reason, usedBy } for referenced variables no local collection lists
+const unlisted = new Map();
 
 async function getVariable(id) {
   if (!variables.has(id)) variables.set(id, await figma.variables.getVariableByIdAsync(id));
@@ -53,15 +62,41 @@ async function collectionName(id) {
   return collectionNames.get(id);
 }
 
-// "→ Collection/Variable" for an alias, or null.
-async function aliasName(alias) {
+function noteUnlisted(name, reason, usedBy) {
+  if (!unlisted.has(name)) unlisted.set(name, { reason, usedBy: new Set() });
+  unlisted.get(name).usedBy.add(usedBy);
+}
+
+// "→ Collection/Variable" for an alias, or null. `usedBy` names the variable or style that
+// references it, for the unlisted-variables report.
+async function aliasName(alias, usedBy) {
   if (!alias || !alias.id) return null;
   let target = null;
   try {
     target = await getVariable(alias.id);
   } catch (e) {}
-  if (!target) return `→ (missing ${alias.id})`;
-  return `→ ${await collectionName(target.variableCollectionId)}/${target.name}`;
+  if (!target) {
+    noteUnlisted(`(missing ${alias.id})`, 'missing', usedBy);
+    return `→ (missing ${alias.id})`;
+  }
+  const name = `${await collectionName(target.variableCollectionId)}/${target.name}`;
+  if (listedIds.has(target.id)) return `→ ${name}`;
+  const reason = target.remote ? 'library' : 'deleted';
+  noteUnlisted(name, reason, usedBy);
+  return `→ ${name} (${reason})`;
+}
+
+// CSS angle of a linear gradient paint (0deg = to top, 90deg = to right). gradientTransform maps
+// the paint's box to gradient space; inverting it gives the gradient axis in box space. On
+// non-square elements the visual angle can differ slightly from this box-space angle.
+function gradientAngle(transform) {
+  const [[a, b, tx], [c, d, ty]] = transform;
+  const det = a * d - b * c;
+  if (!det) return null;
+  const toBox = (x, y) => [(d * (x - tx) - b * (y - ty)) / det, (-c * (x - tx) + a * (y - ty)) / det];
+  const [x0, y0] = toBox(0, 0.5);
+  const [x1, y1] = toBox(1, 0.5);
+  return Math.round(((Math.atan2(x1 - x0, -(y1 - y0)) * 180) / Math.PI + 360) % 360);
 }
 
 // Variables
@@ -78,8 +113,8 @@ if (wantVariables) {
   // Batch the first round of lookups: one await per variable gets slow past ~50 variables.
   await Promise.all(picked.flatMap((c) => c.variableIds).map(getVariable));
 
-  const format = async (value, type) => {
-    if (value && typeof value === 'object' && value.type === 'VARIABLE_ALIAS') return aliasName(value);
+  const format = async (value, type, usedBy) => {
+    if (value && typeof value === 'object' && value.type === 'VARIABLE_ALIAS') return aliasName(value, usedBy);
     if (type === 'COLOR' && value && typeof value === 'object') return color(value);
     if (typeof value === 'number') return String(+value.toFixed(4));
     return cell(value);
@@ -93,7 +128,7 @@ if (wantVariables) {
       const v = variables.get(id);
       if (!v) continue;
       const cells = [];
-      for (const m of c.modes) cells.push(await format(v.valuesByMode[m.modeId], v.resolvedType));
+      for (const m of c.modes) cells.push(await format(v.valuesByMode[m.modeId], v.resolvedType, `${c.name}/${v.name}`));
       variablesMarkdown += `| ${v.name} | ${v.resolvedType} | ${cells.join(' | ')} |\n`;
     }
     variablesMarkdown += '\n';
@@ -113,29 +148,31 @@ if (wantStyles) {
   };
 
   // Bound variables of a style, as "property → Collection/Variable" pairs.
-  const bindings = async (bound) => {
+  const bindings = async (bound, usedBy) => {
     const out = [];
     for (const [prop, alias] of Object.entries(bound || {})) {
       for (const a of Array.isArray(alias) ? alias : [alias]) {
-        const name = await aliasName(a);
+        const name = await aliasName(a, usedBy);
         if (name) out.push(`${prop} ${name}`);
       }
     }
     return out.join('<br>');
   };
 
-  const paint = async (p) => {
+  const paint = async (p, usedBy) => {
     if (p.type === 'SOLID') {
-      const bound = p.boundVariables && p.boundVariables.color ? ` ${await aliasName(p.boundVariables.color)}` : '';
+      const bound = p.boundVariables && p.boundVariables.color ? ` ${await aliasName(p.boundVariables.color, usedBy)}` : '';
       return `${color(p.color, p.opacity === undefined ? 1 : p.opacity)}${bound}`;
     }
     if (p.type && p.type.startsWith('GRADIENT_')) {
       const stops = [];
       for (const s of p.gradientStops) {
-        const bound = s.boundVariables && s.boundVariables.color ? ` ${await aliasName(s.boundVariables.color)}` : '';
+        const bound = s.boundVariables && s.boundVariables.color ? ` ${await aliasName(s.boundVariables.color, usedBy)}` : '';
         stops.push(`${color(s.color)}${bound} @${Math.round(s.position * 100)}%`);
       }
-      return `${p.type.replace('GRADIENT_', '').toLowerCase()}-gradient(${stops.join(', ')})`;
+      const angle = p.type === 'GRADIENT_LINEAR' ? gradientAngle(p.gradientTransform) : null;
+      const kind = p.type.replace('GRADIENT_', '').toLowerCase();
+      return `${kind}-gradient(${angle === null ? '' : `${angle}deg, `}${stops.join(', ')})`;
     }
     return p.type.toLowerCase();
   };
@@ -149,13 +186,13 @@ if (wantStyles) {
   stylesMarkdown += '| Style | Family | Font style | Size | Line height | Letter spacing | Paragraph spacing | Case | Decoration | Bound variables |\n';
   stylesMarkdown += '|---|---|---|---|---|---|---|---|---|---|\n';
   for (const s of textStyles) {
-    stylesMarkdown += `| ${cell(s.name)} | ${cell(s.fontName.family)} | ${cell(s.fontName.style)} | ${s.fontSize} | ${unit(s.lineHeight)} | ${unit(s.letterSpacing)} | ${s.paragraphSpacing || 0} | ${s.textCase === 'ORIGINAL' ? '' : cell(s.textCase)} | ${s.textDecoration === 'NONE' ? '' : cell(s.textDecoration)} | ${await bindings(s.boundVariables)} |\n`;
+    stylesMarkdown += `| ${cell(s.name)} | ${cell(s.fontName.family)} | ${cell(s.fontName.style)} | ${s.fontSize} | ${unit(s.lineHeight)} | ${unit(s.letterSpacing)} | ${s.paragraphSpacing || 0} | ${s.textCase === 'ORIGINAL' ? '' : cell(s.textCase)} | ${s.textDecoration === 'NONE' ? '' : cell(s.textDecoration)} | ${await bindings(s.boundVariables, s.name)} |\n`;
   }
 
   stylesMarkdown += '\n## Color Styles\n\n| Style | Paints |\n|---|---|\n';
   for (const s of paintStyles) {
     const paints = [];
-    for (const p of s.paints) if (p.visible !== false) paints.push(await paint(p));
+    for (const p of s.paints) if (p.visible !== false) paints.push(await paint(p, s.name));
     stylesMarkdown += `| ${cell(s.name)} | ${cell(paints.join(' + '))} |\n`;
   }
 
@@ -176,6 +213,7 @@ return {
   collections: picked.map((c) => ({ name: c.name, modes: c.modes.map((m) => m.name), count: c.variableIds.length })),
   remoteOnly: all.length === 0,
   counts,
+  unlistedVariables: [...unlisted].map(([name, u]) => ({ name, reason: u.reason, usedBy: [...u.usedBy] })),
   variablesMarkdown,
   stylesMarkdown,
 };

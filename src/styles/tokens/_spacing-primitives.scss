@@ -1,0 +1,27 @@
+// Spacing primitives — Figma: SPP Page Designs, "Spacing Primitives" collection.
+// Raw sizes live here only. Components use the semantic tokens in _spacing.scss.
+@use '../abstracts' as *;
+
+:root {
+  --isds-spacing-none: 0;
+  --isds-spacing-xtiny: #{rem(4px)};
+  --isds-spacing-tiny: #{rem(8px)};
+  --isds-spacing-xxsmall: #{rem(12px)};
+  --isds-spacing-xsmall: #{rem(16px)};
+  --isds-spacing-small: #{rem(20px)};
+  --isds-spacing-medium: #{rem(24px)};
+  --isds-spacing-large: #{rem(28px)};
+  --isds-spacing-xlarge: #{rem(32px)};
+  --isds-spacing-xxlarge: #{rem(40px)};
+  --isds-spacing-huge: #{rem(48px)};
+  --isds-spacing-xhuge: #{rem(56px)};
+  --isds-spacing-xxhuge: #{rem(64px)};
+  --isds-spacing-xxxhuge: #{rem(72px)};
+  --isds-spacing-massive: #{rem(80px)};
+  --isds-spacing-xmassive: #{rem(96px)};
+  --isds-spacing-neg-massive: #{rem(-80px)};
+
+  // Not a primitive in Figma: "Special/Component Image Grid-Overlap Space" is a raw 104 there.
+  // TODO(figma-to-sitecore): ask the designer to add it to the scale (or move it onto one).
+  --isds-spacing-104: #{rem(104px)};
+}

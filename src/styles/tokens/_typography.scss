@@ -1,0 +1,97 @@
+// Type tokens — Figma: SPP Page Designs, "Typography" variables and the text styles.
+// Sizes bound to a Figma "Font Size" variable use that scale token directly; only unbound sizes
+// get a per-style token. Fluid sizes scale between the Figma mobile and desktop viewports.
+@use '../abstracts' as *;
+
+:root {
+  // Families (Figma "Font Family" variables; the faces are loaded by next/font in src/lib/fonts.ts)
+  --isds-font-family-heading:
+    var(--font-source-sans), 'Source Sans 3', 'Source Sans Pro', sans-serif;
+  --isds-font-family-body: var(--font-source-sans), 'Source Sans 3', 'Source Sans Pro', sans-serif;
+  --isds-font-family-accent: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  // TODO(figma-to-sitecore): Other/Code L uses Roboto Mono with no family variable in Figma.
+  --isds-font-family-code: var(--font-roboto-mono), 'Roboto Mono', monospace;
+
+  // Size scale (Figma "Font Size" variables, Mobile → Desktop)
+  --isds-font-size-heading-xxl: #{fluid(58px, 100px)};
+  --isds-font-size-heading-xl: #{fluid(28px, 64px)};
+  --isds-font-size-heading-l: #{fluid(24px, 40px)};
+  --isds-font-size-heading-m: #{fluid(22px, 32px)};
+  --isds-font-size-heading-s: #{fluid(20px, 28px)};
+  --isds-font-size-heading-xs: #{fluid(18px, 22px)};
+  --isds-font-size-body-l: #{fluid(18px, 20px)};
+  --isds-font-size-body-m: #{fluid(13px, 16px)};
+  --isds-font-size-body-s: #{fluid(12px, 14px)};
+
+  // Sizes of text styles that aren't bound to a Font Size variable
+  --isds-font-size-other-code-l: #{rem(20px)};
+  --isds-font-size-other-navigation-link: #{rem(16px)};
+  --isds-font-size-other-card-tag: #{rem(12px)};
+  --isds-font-size-other-card-date-xs: #{rem(10px)};
+
+  // Per text style: line height, weight and letter spacing
+  --isds-line-height-display-xxl: 1.2;
+  --isds-font-weight-display-xxl: 700;
+  --isds-line-height-display-xl: 1.1;
+  --isds-font-weight-display-xl: 700;
+  --isds-line-height-display-l: 1.1;
+  --isds-font-weight-display-l: 700;
+  --isds-line-height-display-m: 1.1;
+  --isds-font-weight-display-m: 700;
+  --isds-line-height-display-s: 1.1;
+  --isds-font-weight-display-s: 700;
+  --isds-line-height-display-xs: 1.25;
+  --isds-font-weight-display-xs: 700;
+  --isds-line-height-body-l: 1.6;
+  --isds-font-weight-body-l: 400;
+  --isds-line-height-body-m: 1.6;
+  --isds-font-weight-body-m: 400;
+  --isds-line-height-body-m-noheight: 1.4;
+  --isds-font-weight-body-m-noheight: 400;
+  --isds-line-height-body-s: 1.6;
+  --isds-font-weight-body-s: 400;
+  --isds-line-height-body-s-noheight: 1.6;
+  --isds-font-weight-body-s-noheight: 400;
+  --isds-line-height-other-caption: 1.5;
+  --isds-font-weight-other-caption: 400;
+  --isds-line-height-other-eyebrow: 1.4;
+  --isds-font-weight-other-eyebrow: 700;
+  --isds-letter-spacing-other-eyebrow: 0.14em;
+  --isds-line-height-other-form-field: 1.5;
+  --isds-font-weight-other-form-field: 400;
+  --isds-line-height-other-button: 1.5;
+  --isds-font-weight-other-button: 700;
+  --isds-letter-spacing-other-button: 0.12em;
+  --isds-line-height-other-code-l: normal;
+  --isds-font-weight-other-code-l: 700;
+  --isds-line-height-wysiwyg-h2: 1.1;
+  --isds-font-weight-wysiwyg-h2: 700;
+  --isds-line-height-wysiwyg-h3: 1.1;
+  --isds-font-weight-wysiwyg-h3: 700;
+  --isds-line-height-wysiwyg-h4: 1.2;
+  --isds-font-weight-wysiwyg-h4: 700;
+  --isds-line-height-wysiwyg-h5: 1.2;
+  --isds-font-weight-wysiwyg-h5: 700;
+  --isds-line-height-wysiwyg-h6: 1.2;
+  --isds-font-weight-wysiwyg-h6: 700;
+  --isds-line-height-other-navigation-link: 1.1;
+  --isds-font-weight-other-navigation-link: 700;
+  --isds-line-height-other-card-headline: 1.1;
+  --isds-font-weight-other-card-headline: 700;
+  --isds-line-height-other-card-tag: 1.6;
+  --isds-font-weight-other-card-tag: 400;
+  --isds-line-height-other-card-date-l: 1.6;
+  --isds-font-weight-other-card-date-l: 700;
+  --isds-line-height-other-card-date-s: 1.3;
+  --isds-font-weight-other-card-date-s: 700;
+  --isds-letter-spacing-other-card-date-s: 0.15em;
+  --isds-line-height-other-card-date-xs: 1.5;
+  --isds-font-weight-other-card-date-xs: 700;
+  --isds-letter-spacing-other-card-date-xs: 0.12em;
+  --isds-line-height-infographic-small-label: 1.1;
+  --isds-font-weight-infographic-small-label: 400;
+  --isds-line-height-body-l-noheight: 1.6;
+  --isds-font-weight-body-l-noheight: 400;
+  --isds-line-height-card-headline-m: 1.1;
+  --isds-font-weight-card-headline-m: 700;
+}

@@ -1,0 +1,65 @@
+// Semantic spacing — Figma: SPP Page Designs, "Spacing Tokens" collection.
+// Mobile-first: the Mobile mode on :root, the Desktop mode from the tablet breakpoint.
+// Each comment says what the token is for; components pick tokens by these uses.
+@use '../abstracts' as *;
+
+:root {
+  // Vertical padding inside each full-width section
+  --isds-spacing-section-padding: var(--isds-spacing-huge);
+  // Gap between a component's main blocks (heading group ↔ content)
+  --isds-spacing-component-gap: var(--isds-spacing-medium);
+  // Gap between elements inside a block (title ↔ body)
+  --isds-spacing-element-gap: var(--isds-spacing-small);
+  // Gap between the parts of a hero
+  --isds-spacing-hero-gap: var(--isds-spacing-huge);
+  // Space between the hero and the first content section
+  --isds-spacing-hero-hero-to-content-gap: var(--isds-spacing-medium);
+
+  // Gap inside buttons and links (icon ↔ label)
+  --isds-spacing-interactive-element-gap: var(--isds-spacing-tiny);
+  // Horizontal padding inside buttons and form fields
+  --isds-spacing-interactive-horizontal-padding: var(--isds-spacing-small);
+  // Vertical padding inside buttons and form fields
+  --isds-spacing-interactive-vertical-padding: var(--isds-spacing-xsmall);
+
+  // Space between content blocks in a column
+  --isds-spacing-rhythm-block: var(--isds-spacing-xxlarge);
+  // Space between stacked elements (heading ↔ text)
+  --isds-spacing-rhythm-stack: var(--isds-spacing-xsmall);
+  // Space between list items (cards, rows)
+  --isds-spacing-rhythm-list-items: var(--isds-spacing-xlarge);
+  // Space between items in a group
+  --isds-spacing-rhythm-group: var(--isds-spacing-small);
+  // Tight spacing (labels, metadata)
+  --isds-spacing-rhythm-compact: var(--isds-spacing-xxsmall);
+  // Space between sections of content inside a component
+  --isds-spacing-rhythm-section: var(--isds-spacing-xhuge);
+
+  // Gap between fields in a modal form.
+  // TODO(figma-to-sitecore): Figma sets it to 0 on mobile; confirm with the designer.
+  --isds-spacing-modal-form-field-gap: var(--isds-spacing-none);
+
+  // How far the image overlaps the grid in the Component Image Grid
+  --isds-spacing-special-component-image-grid-overlap-space: var(--isds-spacing-none);
+  // Gap between elements in the 2-up and 3-up image grids
+  --isds-spacing-special-component-image-grid-2up-and-3up-element-gap: var(--isds-spacing-none);
+
+  // Paragraph spacing in body text styles.
+  // TODO(figma-to-sitecore): deleted from "Spacing Tokens" in Figma, but nine text styles still
+  // bind to it (20px). Recreated so the type mode can use it; ask the designer to restore it.
+  --isds-spacing-typography-vertical-spacing: var(--isds-spacing-small);
+}
+
+// Desktop mode: only the tokens whose value differs from Mobile
+@include mq(tablet) {
+  :root {
+    --isds-spacing-section-padding: var(--isds-spacing-xmassive);
+    --isds-spacing-component-gap: var(--isds-spacing-xlarge);
+    --isds-spacing-element-gap: var(--isds-spacing-medium);
+    --isds-spacing-hero-gap: var(--isds-spacing-xmassive);
+    --isds-spacing-hero-hero-to-content-gap: var(--isds-spacing-xxhuge);
+    --isds-spacing-modal-form-field-gap: var(--isds-spacing-medium);
+    --isds-spacing-special-component-image-grid-overlap-space: var(--isds-spacing-104);
+    --isds-spacing-special-component-image-grid-2up-and-3up-element-gap: var(--isds-spacing-xxhuge);
+  }
+}

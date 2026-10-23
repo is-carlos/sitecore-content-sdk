@@ -1,0 +1,11 @@
+// One class per Figma text style, for Typography.stories.tsx. The type mode keeps this in sync
+// with src/styles/abstracts/_type.scss.
+@use '../../styles/abstracts' as *;
+
+// .headingH2 {
+//   @include heading-h2;
+// }
+
+.richText {
+  max-width: 45rem;
+}

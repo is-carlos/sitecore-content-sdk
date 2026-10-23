@@ -1,0 +1,280 @@
+// One mixin per Figma text style (SPP Page Designs), from the tokens in tokens/_typography.scss.
+// Components: `@include display-xl;`. Letter spacing is always set (0 when the style has none),
+// because it inherits.
+
+// Display/XXL
+@mixin display-xxl {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-xxl);
+  font-weight: var(--isds-font-weight-display-xxl);
+  line-height: var(--isds-line-height-display-xxl);
+  letter-spacing: 0;
+}
+
+// Display/XL
+@mixin display-xl {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-xl);
+  font-weight: var(--isds-font-weight-display-xl);
+  line-height: var(--isds-line-height-display-xl);
+  letter-spacing: 0;
+}
+
+// Display/L
+@mixin display-l {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-l);
+  font-weight: var(--isds-font-weight-display-l);
+  line-height: var(--isds-line-height-display-l);
+  letter-spacing: 0;
+}
+
+// Display/M
+@mixin display-m {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-m);
+  font-weight: var(--isds-font-weight-display-m);
+  line-height: var(--isds-line-height-display-m);
+  letter-spacing: 0;
+}
+
+// Display/S
+@mixin display-s {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-s);
+  font-weight: var(--isds-font-weight-display-s);
+  line-height: var(--isds-line-height-display-s);
+  letter-spacing: 0;
+}
+
+// Display/XS
+@mixin display-xs {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-xs);
+  font-weight: var(--isds-font-weight-display-xs);
+  line-height: var(--isds-line-height-display-xs);
+  letter-spacing: 0;
+}
+
+// Body/Body L
+@mixin body-l {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-l);
+  font-weight: var(--isds-font-weight-body-l);
+  line-height: var(--isds-line-height-body-l);
+  letter-spacing: 0;
+}
+
+// Body/Body M
+@mixin body-m {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-body-m);
+  line-height: var(--isds-line-height-body-m);
+  letter-spacing: 0;
+}
+
+// Body/Body M NoHeight
+@mixin body-m-noheight {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-body-m-noheight);
+  line-height: var(--isds-line-height-body-m-noheight);
+  letter-spacing: 0;
+}
+
+// Body/Body S
+@mixin body-s {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-s);
+  font-weight: var(--isds-font-weight-body-s);
+  line-height: var(--isds-line-height-body-s);
+  letter-spacing: 0;
+}
+
+// Body/Body S NoHeight
+// TODO(figma-to-sitecore): same line height as the base style in Figma (160%); only Body M NoHeight differs. Ask the designer.
+@mixin body-s-noheight {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-s);
+  font-weight: var(--isds-font-weight-body-s-noheight);
+  line-height: var(--isds-line-height-body-s-noheight);
+  letter-spacing: 0;
+}
+
+// Other/Caption
+@mixin other-caption {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-s);
+  font-weight: var(--isds-font-weight-other-caption);
+  line-height: var(--isds-line-height-other-caption);
+  letter-spacing: 0;
+}
+
+// Other/Eyebrow
+@mixin other-eyebrow {
+  font-family: var(--isds-font-family-accent);
+  font-size: var(--isds-font-size-body-s);
+  font-weight: var(--isds-font-weight-other-eyebrow);
+  line-height: var(--isds-line-height-other-eyebrow);
+  letter-spacing: var(--isds-letter-spacing-other-eyebrow);
+  text-transform: uppercase;
+}
+
+// Other/Form Field
+@mixin other-form-field {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-other-form-field);
+  line-height: var(--isds-line-height-other-form-field);
+  letter-spacing: 0;
+}
+
+// Other/Button
+@mixin other-button {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-other-button);
+  line-height: var(--isds-line-height-other-button);
+  letter-spacing: var(--isds-letter-spacing-other-button);
+  text-transform: uppercase;
+}
+
+// Other/Code L
+@mixin other-code-l {
+  font-family: var(--isds-font-family-code);
+  font-size: var(--isds-font-size-other-code-l);
+  font-weight: var(--isds-font-weight-other-code-l);
+  line-height: var(--isds-line-height-other-code-l);
+  letter-spacing: 0;
+}
+
+// WYSIWYG/H2
+@mixin wysiwyg-h2 {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-l);
+  font-weight: var(--isds-font-weight-wysiwyg-h2);
+  line-height: var(--isds-line-height-wysiwyg-h2);
+  letter-spacing: 0;
+}
+
+// WYSIWYG/H3
+@mixin wysiwyg-h3 {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-m);
+  font-weight: var(--isds-font-weight-wysiwyg-h3);
+  line-height: var(--isds-line-height-wysiwyg-h3);
+  letter-spacing: 0;
+}
+
+// WYSIWYG/H4
+@mixin wysiwyg-h4 {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-s);
+  font-weight: var(--isds-font-weight-wysiwyg-h4);
+  line-height: var(--isds-line-height-wysiwyg-h4);
+  letter-spacing: 0;
+}
+
+// WYSIWYG/H5
+@mixin wysiwyg-h5 {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-xs);
+  font-weight: var(--isds-font-weight-wysiwyg-h5);
+  line-height: var(--isds-line-height-wysiwyg-h5);
+  letter-spacing: 0;
+}
+
+// WYSIWYG/H6
+@mixin wysiwyg-h6 {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-heading-xs);
+  font-weight: var(--isds-font-weight-wysiwyg-h6);
+  line-height: var(--isds-line-height-wysiwyg-h6);
+  letter-spacing: 0;
+}
+
+// Other/Navigation Link
+@mixin other-navigation-link {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-other-navigation-link);
+  font-weight: var(--isds-font-weight-other-navigation-link);
+  line-height: var(--isds-line-height-other-navigation-link);
+  letter-spacing: 0;
+}
+
+// Other/Card Headline
+@mixin other-card-headline {
+  font-family: var(--isds-font-family-heading);
+  font-size: var(--isds-font-size-body-l);
+  font-weight: var(--isds-font-weight-other-card-headline);
+  line-height: var(--isds-line-height-other-card-headline);
+  letter-spacing: 0;
+}
+
+// Other/Card Tag
+@mixin other-card-tag {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-other-card-tag);
+  font-weight: var(--isds-font-weight-other-card-tag);
+  line-height: var(--isds-line-height-other-card-tag);
+  letter-spacing: 0;
+}
+
+// Other/Card Date L
+// Figma doesn't bind this style's family; it's Space Grotesk, the accent family.
+@mixin other-card-date-l {
+  font-family: var(--isds-font-family-accent);
+  font-size: var(--isds-font-size-heading-m);
+  font-weight: var(--isds-font-weight-other-card-date-l);
+  line-height: var(--isds-line-height-other-card-date-l);
+  letter-spacing: 0;
+}
+
+// Other/Card Date S
+// Figma doesn't bind this style's family; it's Space Grotesk, the accent family.
+@mixin other-card-date-s {
+  font-family: var(--isds-font-family-accent);
+  font-size: var(--isds-font-size-body-s);
+  font-weight: var(--isds-font-weight-other-card-date-s);
+  line-height: var(--isds-line-height-other-card-date-s);
+  letter-spacing: var(--isds-letter-spacing-other-card-date-s);
+}
+
+// Other/Card Date XS
+@mixin other-card-date-xs {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-other-card-date-xs);
+  font-weight: var(--isds-font-weight-other-card-date-xs);
+  line-height: var(--isds-line-height-other-card-date-xs);
+  letter-spacing: var(--isds-letter-spacing-other-card-date-xs);
+  text-transform: uppercase;
+}
+
+// Infographic/Small Label
+@mixin infographic-small-label {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-infographic-small-label);
+  line-height: var(--isds-line-height-infographic-small-label);
+  letter-spacing: 0;
+}
+
+// Body/Body L NoHeight
+// TODO(figma-to-sitecore): same line height as the base style in Figma (160%); only Body M NoHeight differs. Ask the designer.
+@mixin body-l-noheight {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-l);
+  font-weight: var(--isds-font-weight-body-l-noheight);
+  line-height: var(--isds-line-height-body-l-noheight);
+  letter-spacing: 0;
+}
+
+// Card Headline M
+@mixin card-headline-m {
+  font-family: var(--isds-font-family-body);
+  font-size: var(--isds-font-size-body-m);
+  font-weight: var(--isds-font-weight-card-headline-m);
+  line-height: var(--isds-line-height-card-headline-m);
+  letter-spacing: 0;
+}

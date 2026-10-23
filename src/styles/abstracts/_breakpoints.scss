@@ -1,0 +1,15 @@
+@use 'sass:map';
+
+// Mobile-first (min-width). Tablet matches the existing 767px switch in Layout.module.scss;
+// desktop is the Figma desktop viewport.
+$breakpoints: (
+  tablet: 768px,
+  laptop: 1024px,
+  desktop: 1600px,
+) !default;
+
+@mixin mq($name) {
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}

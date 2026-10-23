@@ -4,7 +4,7 @@ description: Builds the design system and components of a Sitecore Content SDK (
 compatibility: Claude Code or Cursor Agent mode. Requires the Figma MCP. A browser MCP is used for visual QA when available. Requires @sitecore-content-sdk/nextjs (Pages Router or App Router); JSS (@sitecore-jss/*) projects are not supported.
 metadata:
   author: Interactive Strategies
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 

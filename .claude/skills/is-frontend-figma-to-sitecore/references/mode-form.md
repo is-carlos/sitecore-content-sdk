@@ -39,7 +39,7 @@ For each element (label, help text, text input, textarea, select, checkbox, radi
 
 ## Step 4e — Storybook
 
-Plan to create or update `src/stories/design-system/Forms.stories.tsx`: one story per element showing every state side by side (disabled and error via attributes), wrapped in `<form className="isds-form">`.
+Plan to copy `Forms.stories.tsx` from the template if it doesn't exist ([storybook.md](storybook.md) → "Design-system stories"): every element and state inside `<form className="isds-form">`. Add the elements the design has that the template doesn't (switch, file input…).
 
 ## Step 4f — Proposal
 

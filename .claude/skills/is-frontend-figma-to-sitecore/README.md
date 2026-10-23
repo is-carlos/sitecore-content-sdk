@@ -4,7 +4,7 @@ Turns a Figma file into a Sitecore Content SDK head app's design system and comp
 
 The Sitecore counterpart of `is-frontend-figma-to-code` (Falcore): same modes and token rules, adapted to the Content SDK, Next.js and CSS modules.
 
-**Version:** 1.0.0
+**Version:** 1.3.0
 
 **Requirements:**
 - A Next.js 16 head on `@sitecore-content-sdk/nextjs` 2.x, Pages Router or App Router. JSS (`@sitecore-jss/*`) is not supported.
@@ -62,12 +62,31 @@ The Sitecore counterpart of `is-frontend-figma-to-code` (Falcore): same modes an
 | `scripts/extract-content.js` | Read-only content inventory of one Figma node (`use_figma`) |
 | `scripts/export-tokens.js` | Read-only dump of all variable collections and text, color and effect styles, as the cache markdown |
 | `assets/*.md` | Cache templates copied by `init` |
+| `assets/storybook/` | Design-system story kit (`DesignSystem.tsx`) and one story template per area, copied by `init` and the design-system modes |
 
 ## What gets cached
 
 `init` creates `.claude/figma-to-sitecore/` (commit it so the team shares it): `url-references.md`, `figma-variables.md`, `figma-styles.md`. Design-system and component modes refuse to run without a populated variables cache.
 
 ## Changelog
+
+### 1.3.0
+From the first type run (SPP Page Designs):
+- Font sizes bound to a Figma size variable use the scale token directly (`--isds-font-size-heading-xl`); only unbound sizes get a per-style token. Avoids name collisions that made a token reference itself.
+- Text-style mixins always set `letter-spacing` (`0` when the style has none), since it inherits.
+- `next/font` family names are quoted with a `cssFontFamily()` helper before going into `--font-*` properties: Storybook returns them unquoted, and a name like `Source Sans 3` is invalid CSS unquoted. Also: check for Google renames (Source Sans Pro → `Source_Sans_3`).
+- The type mode generates its files from one data table and verifies every mixin against the cache.
+
+### 1.2.0
+- Design-system story templates in `assets/storybook/`: a story kit (`DesignSystem.tsx`: `TokenList`, `ThemeColumns`, `TextStyleList`, `ClassGallery`) that reads tokens, themes and classes from the CSS, so stories never keep token lists; plus Color, Typography, Spacing, Effects, Buttons and Forms stories. `init` copies the kit; each mode copies its story.
+- Naming for radius and shadow tokens.
+
+### 1.1.0
+From the first color run (SPP Page Designs):
+- `export-tokens.js` writes linear gradients with their CSS angle, and reports `unlistedVariables`: variables that styles or aliases reference but no collection lists (deleted, library or missing), also marked in the caches.
+- Semantic tokens that alias other semantic tokens are re-declared in every theme (token-layer.md).
+- The color mode skips Figma-only colors (grid overlays, guides, notes) by default, and has rules for gradient angles and off-palette gradients.
+- The variables and type modes report and ask about unlisted variables.
 
 ### 1.0.0
 Restarted from the structure of `is-frontend-figma-to-code` 1.3.0, replacing the 0.6.0 component-only draft.

@@ -1,0 +1,16 @@
+// Radii — Figma: SPP Page Designs, "Other" collection (Border Radius/*).
+// Mobile-first: the Mobile mode on :root, the Desktop mode from the tablet breakpoint.
+// Shadows (the Figma effect styles) aren't included yet.
+@use '../abstracts' as *;
+
+:root {
+  --isds-radius-s: #{rem(4px)};
+  --isds-radius-l: #{rem(8px)};
+  --isds-radius-circle: #{rem(1000px)};
+}
+
+@include mq(tablet) {
+  :root {
+    --isds-radius-l: #{rem(12px)};
+  }
+}

@@ -1,0 +1,71 @@
+// Color primitives — Figma: SPP Page Designs, "Color Primitives" collection.
+// Raw values live here only. Everything else references these through semantic tokens.
+// Not included: "Magenta (Figma grids)" and "Lime (Figma notes)", which only color Figma's own guides.
+
+:root {
+  --isds-color-white-500: #ffffff;
+  --isds-color-black-500: #000000;
+
+  --isds-color-gray-100: #f6f5f2;
+  --isds-color-gray-200: #eaeaec;
+  --isds-color-gray-300: #adb4bc;
+  --isds-color-gray-500: #959395;
+  --isds-color-gray-700: #6d6e72;
+  --isds-color-gray-900: #1a1a1a;
+
+  --isds-color-blue-200: #99caea;
+  --isds-color-blue-300: #004e7c;
+  --isds-color-blue-400: #1e3a6e;
+  --isds-color-blue-500: #16264a;
+  --isds-color-blue-700: #1d2049;
+
+  --isds-color-gold-400: #feeab5;
+  --isds-color-gold-500: #e8cf79;
+
+  --isds-color-yellow-100: #fefeef;
+  --isds-color-yellow-300: #fcf7a4;
+  --isds-color-yellow-500: #f8ed33;
+  --isds-color-yellow-700: #fdbd11;
+
+  --isds-color-orange-100: #fff9f0;
+  --isds-color-orange-200: #fff4eb;
+  --isds-color-orange-300: #fedcaa;
+  --isds-color-orange-350: #ffbf8d;
+  --isds-color-orange-400: #fcb040;
+  --isds-color-orange-500: #fe7000;
+  --isds-color-orange-600: #e65332;
+  --isds-color-orange-700: #d53d1a;
+
+  --isds-color-coral-500: #f47b58;
+  --isds-color-coral-700: #d04125;
+  --isds-color-coral-800: #a43c3e;
+  --isds-color-coral-900: #803044;
+
+  --isds-color-red-100: #fdeced;
+  --isds-color-red-200: #f4959a;
+  --isds-color-red-500: #e7131d;
+  --isds-color-red-600: #a91923;
+  --isds-color-red-700: #852e33;
+
+  --isds-color-burgundy-500: #5b2249;
+  --isds-color-burgundy-700: #281f2d;
+
+  --isds-color-green-100: #eff9f1;
+  --isds-color-green-200: #f6faf0;
+  --isds-color-green-300: #a7deae;
+  --isds-color-green-400: #8ec63e;
+  --isds-color-green-500: #3ab54a;
+  --isds-color-green-600: #019444;
+
+  --isds-color-teal-500: #018f81;
+
+  // Not primitives in Figma: these are raw values in "Color Tokens". Added here so the semantic
+  // tokens stay aliases. TODO(figma-to-sitecore): ask the designer to add them as primitives.
+  --isds-color-white-a24: #ffffff3d; // Surface/Transparent
+  --isds-color-teal-100: #dce9e8; // Grid Conditions/Border
+  --isds-color-chart-1: #6897c3;
+  --isds-color-chart-2: #8fafce;
+  --isds-color-chart-3: #298cb2;
+  --isds-color-chart-4: #fbab19;
+  --isds-color-chart-5: #f3742c;
+}

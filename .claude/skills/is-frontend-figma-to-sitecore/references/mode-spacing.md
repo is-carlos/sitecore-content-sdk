@@ -32,7 +32,7 @@ Then interview the user about each semantic token's use until you agree (e.g. *"
 
 ## Step 4e — Storybook
 
-Plan to create or update `src/stories/design-system/Spacing.stories.tsx`: a `Primitives` story (one bar per primitive, labeled with name and px) and a `Tokens` story (one bar per semantic token, with its comment), viewable at mobile and desktop widths.
+Plan to copy `Spacing.stories.tsx` from the template if it doesn't exist ([storybook.md](storybook.md) → "Design-system stories"). It reads the tokens from the CSS: `Primitives` and `Tokens` (resize the canvas to see each breakpoint's values). If this run adds radius or shadow tokens to `tokens/_effects.scss`, plan `Effects.stories.tsx` too.
 
 ## Step 4f — Proposal
 

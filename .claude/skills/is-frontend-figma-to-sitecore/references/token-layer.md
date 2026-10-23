@@ -97,10 +97,13 @@ Prefix every custom property with `--isds-`. Derive names from the Figma variabl
 | Semantic color, nested | `Button/Primary/Background Hover` | `--isds-color-button-primary-background-hover` |
 | Gradient stop / gradient | `Gradients/Hero/A`, style `Gradients/Hero` | `--isds-color-gradient-hero-a`, `--isds-gradient-hero` |
 | Font family | `Font/Heading` | `--isds-font-family-heading` |
-| Font size / line height / weight / tracking | text style `Heading/H2` | `--isds-font-size-heading-h2`, `--isds-line-height-heading-h2`, `--isds-font-weight-heading-h2`, `--isds-letter-spacing-heading-h2` |
+| Font size scale | variable `Font Size/Heading/XL` | `--isds-font-size-heading-xl` (the `Font Size/` group dropped) |
+| Font size of an unbound style / line height / weight / tracking | text style `Heading/H2` | `--isds-font-size-heading-h2` (only when the style's size isn't bound to a size variable), `--isds-line-height-heading-h2`, `--isds-font-weight-heading-h2`, `--isds-letter-spacing-heading-h2` |
 | Spacing primitive | `Spacing` › `xsmall` | `--isds-spacing-xsmall` |
 | Semantic spacing | `Spacing Tokens` › `Section/Padding` | `--isds-spacing-section-padding` |
 | Text-style mixin | `Heading/H2` | `@mixin heading-h2` |
+| Radius | `Border Radius/L` | `--isds-radius-l` |
+| Shadow | effect style `Nav Dropdown Shadow 1` | `--isds-shadow-nav-dropdown-shadow-1` |
 | Button mixin / class | `Button/Primary` | `@mixin button-primary` / `.isds-button-primary` |
 
 If a Figma name can't follow this (e.g. a primitive named `Brand` instead of `Color/Step`), stop and ask the user to resolve it with the designer, or to pick a name.
@@ -142,6 +145,7 @@ Themes re-map **semantic** tokens, never primitives. (A semantic token declared 
 
 - One theme per Figma mode of the semantic color collection. No modes → no theme selectors at all.
 - The default block repeats `[data-color-theme='default']` so a default-themed section inside a dark one resets correctly.
+- **Semantic → semantic aliases** (a Figma token whose value is another semantic token, e.g. `Interactive/Link/Default` → `Color Tokens/Interactive/Default`): write `var(--isds-color-interactive-default)`, and **re-declare it in every theme block**, even when its own Figma value is the same in each mode. A custom property's `var()` is resolved where it's declared, so one declared only on `:root` keeps the default theme's value inside a themed container. Add a comment saying why it's repeated.
 - **Sitecore authors pick themes with the Styles rendering parameter.** A Style item's *Value* is a class name; `params.styles` lands on the component's root element unhashed, so `.isds-color-theme-dark` themes the component with no code. List these class names in the report so someone creates the Style items.
 - **Site-wide themes / multisite brands** (Figma modes like `Pro Default`, `Pro Dark`): put the site attribute on `<body>` or the layout root (`data-site-theme="pro"`, set from `page.siteName` in `Layout.tsx`; ask first) and combine selectors: `[data-site-theme='pro'] [data-color-theme='dark'] { … }`.
 

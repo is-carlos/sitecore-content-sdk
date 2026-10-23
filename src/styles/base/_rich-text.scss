@@ -1,0 +1,65 @@
+// Sitecore Rich Text fields render raw HTML. Components add the class: <RichText className="isds-rich-text …" />.
+// Headings use the Figma WYSIWYG/* styles, body copy Body/Body L.
+@use '../abstracts' as *;
+
+.isds-rich-text {
+  @include body-l;
+
+  > * {
+    margin-block: 0;
+  }
+
+  // Figma's paragraph spacing (20px) between blocks, more above headings
+  > * + * {
+    margin-block-start: var(--isds-spacing-typography-vertical-spacing);
+  }
+
+  > * + :is(h2, h3, h4, h5, h6) {
+    margin-block-start: var(--isds-spacing-rhythm-block);
+  }
+
+  h2 {
+    @include wysiwyg-h2;
+  }
+
+  h3 {
+    @include wysiwyg-h3;
+  }
+
+  h4 {
+    @include wysiwyg-h4;
+  }
+
+  h5 {
+    @include wysiwyg-h5;
+  }
+
+  h6 {
+    @include wysiwyg-h6;
+  }
+
+  p,
+  li {
+    @include body-l;
+  }
+
+  ul,
+  ol {
+    padding-inline-start: 1.5em;
+  }
+
+  li + li {
+    margin-block-start: var(--isds-spacing-rhythm-compact);
+  }
+
+  a {
+    color: var(--isds-color-interactive-link-default);
+    text-decoration: underline;
+    text-decoration-color: var(--isds-color-interactive-icons-and-underlines);
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      color: var(--isds-color-interactive-link-hover);
+    }
+  }
+}

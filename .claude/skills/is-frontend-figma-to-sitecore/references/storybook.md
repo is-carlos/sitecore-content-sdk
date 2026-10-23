@@ -125,17 +125,30 @@ Stories:
 
 ## Design-system stories
 
-Under `src/stories/design-system/` (or the project's equivalent), titles `Design System/<Area>`, so ids are `design-system-<area>--<story>`:
+Built from the templates in this skill's [assets/storybook/](../assets/storybook/), into `src/stories/design-system/` (or the project's equivalent). Titles are `Design System/<Area>`, so ids are `design-system-<area>--<story>`.
 
-| File | Stories | Created by |
+**The kit** — `DesignSystem.tsx` + `DesignSystem.module.scss`, copied by `init`. It reads the `--isds-*` tokens, color themes and `isds-*` classes straight from the page's stylesheets, so **stories have no token lists to keep in sync**: a token added to the token layer shows up on the next reload.
+
+| Export | Shows |
+|---|---|
+| `TokenList` | every token matching `{ prefix, exclude?, tier? }` (`tier`: `primitive` = raw value, `semantic` = `var()` alias), previewed as `kind`: `color`, `gradient`, `spacing`, `radius`, `shadow`, `font-size`, `font-family` or `value`. Each row has the token's value where it's shown and its resolved px value, re-read on resize. |
+| `ThemeColumns` | its children once per color theme found in the CSS, side by side |
+| `TextStyleList` | one sample per text style, with its computed family, weight, size, line height and letter spacing |
+| `ClassGallery` | every global class with a prefix (e.g. `isds-button-`), rendered by a function |
+| `Section` | a titled block |
+
+**The stories** — each mode copies its template when the file doesn't exist yet, replacing `__FIGMA_URL__` with the area's URL from `url-references.md` (or `## Document`):
+
+| Template | Stories | Copied by |
 |---|---|---|
-| `Color.stories.tsx` | `Primitives`, `Tokens` (swatches with token names; tokens shown per theme) | color |
-| `Typography.stories.tsx` | `Styles` (each text-style mixin), `RichText` (every element in `.isds-rich-text`) | type |
-| `Spacing.stories.tsx` | `Primitives`, `Tokens` | spacing |
-| `Buttons.stories.tsx` | one per button type | button |
-| `Forms.stories.tsx` | one per form element | form |
+| `Color.stories.tsx` | `Primitives`, `Tokens` (every theme), `Gradients` | color |
+| `Typography.stories.tsx` + `Typography.stories.module.scss` | `Styles`, `Tokens`, `RichText` | type — the only template the mode edits: one `TEXT_STYLES` entry and one module class (`@include <mixin>;`) per text style |
+| `Spacing.stories.tsx` | `Primitives`, `Tokens` (resize to see breakpoints) | spacing |
+| `Effects.stories.tsx` | `Radii`, `Shadows` | whichever mode adds `tokens/_effects.scss` |
+| `Buttons.stories.tsx` | `AllButtons` (every `.isds-button-*`, every theme) | button |
+| `Forms.stories.tsx` | `Elements` (every element and state in `.isds-form`) | form |
 
-Render swatches and bars from a small list of token names in the story file (the mode keeps it in sync), reading values in the browser with `getComputedStyle(document.documentElement).getPropertyValue(name)` so the story shows what the CSS actually resolves to. Style stories with a `*.module.scss` next to them; use tokens there too.
+Never overwrite a story file the project already has; if it differs from the template, say so and ask. After copying, run Prettier on it (SKILL.md Step 6).
 
 ## QA
 

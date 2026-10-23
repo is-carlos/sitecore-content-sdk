@@ -1,0 +1,200 @@
+// Semantic colors, themes and gradients — Figma: SPP Page Designs, "Color Tokens" and
+// "Gradient Tokens" collections, and the Gradient/* color styles.
+// Semantic tokens reference primitives only. Components reference semantic tokens.
+//
+// Themes: one per mode of "Color Tokens" — Normal → default, On Dark → on-dark. Apply one with
+// data-color-theme="on-dark", or the class isds-color-theme-on-dark (a Sitecore Style item's value).
+// Not included: Figma/Guides and Figma/Documentation *, which only color Figma's own guides.
+
+:root,
+[data-color-theme='default'],
+.isds-color-theme-default {
+  // Text
+  --isds-color-text-primary: var(--isds-color-gray-900);
+  --isds-color-text-secondary: var(--isds-color-gray-700);
+  --isds-color-text-brand: var(--isds-color-blue-400);
+  --isds-color-text-invert: var(--isds-color-white-500);
+  --isds-color-text-disabled: var(--isds-color-gray-500);
+
+  // Surface
+  --isds-color-surface-default: var(--isds-color-white-500);
+  --isds-color-surface-subtle: var(--isds-color-gray-100);
+  --isds-color-surface-brand: var(--isds-color-blue-500);
+  --isds-color-surface-urgent: var(--isds-color-gold-400);
+  --isds-color-surface-transparent: var(--isds-color-white-a24);
+
+  // Interactive
+  --isds-color-interactive-default: var(--isds-color-blue-500);
+  --isds-color-interactive-hover: var(--isds-color-blue-400);
+  --isds-color-interactive-secondary: var(--isds-color-blue-500);
+  --isds-color-interactive-secondary-hover: var(--isds-color-blue-400);
+  --isds-color-interactive-icons-and-underlines: var(--isds-color-orange-700);
+  --isds-color-interactive-disabled-icons: var(--isds-color-gray-500);
+  // Figma aliases these to Interactive/Default and Interactive/Hover. They're re-declared in each
+  // theme: a property declared here resolves here, so it wouldn't follow a theme's new value.
+  --isds-color-interactive-link-default: var(--isds-color-interactive-default);
+  --isds-color-interactive-link-hover: var(--isds-color-interactive-hover);
+
+  // Border
+  --isds-color-border-default: var(--isds-color-gray-700);
+  --isds-color-border-subtle: var(--isds-color-gray-300);
+  --isds-color-border-subtle-aa: var(--isds-color-gray-500);
+  --isds-color-border-row-subtle: var(--isds-color-gray-200);
+
+  // Status
+  --isds-color-status-error: var(--isds-color-red-500);
+
+  // Grid conditions
+  --isds-color-grid-conditions-baseline-normal-main: var(--isds-color-green-600);
+  --isds-color-grid-conditions-baseline-normal-secondary: var(--isds-color-green-300);
+  --isds-color-grid-conditions-baseline-normal-bg: var(--isds-color-white-500);
+  --isds-color-grid-conditions-weather-advisory-main: var(--isds-color-green-500);
+  --isds-color-grid-conditions-weather-advisory-secondary: var(--isds-color-green-300);
+  --isds-color-grid-conditions-weather-advisory-bg: var(--isds-color-green-100);
+  --isds-color-grid-conditions-resource-advisory-main: var(--isds-color-green-400);
+  --isds-color-grid-conditions-resource-advisory-secondary: var(--isds-color-green-300);
+  --isds-color-grid-conditions-resource-advisory-bg: var(--isds-color-green-200);
+  --isds-color-grid-conditions-conservative-op-advisory-main: var(--isds-color-yellow-500);
+  --isds-color-grid-conditions-conservative-op-advisory-secondary: var(--isds-color-yellow-300);
+  --isds-color-grid-conditions-conservative-op-advisory-bg: var(--isds-color-yellow-100);
+  --isds-color-grid-conditions-emergency-alert-1-main: var(--isds-color-orange-400);
+  --isds-color-grid-conditions-emergency-alert-1-secondary: var(--isds-color-orange-300);
+  --isds-color-grid-conditions-emergency-alert-1-bg: var(--isds-color-orange-100);
+  --isds-color-grid-conditions-emergency-alert-2-main: var(--isds-color-orange-500);
+  --isds-color-grid-conditions-emergency-alert-2-secondary: var(--isds-color-orange-350);
+  --isds-color-grid-conditions-emergency-alert-2-bg: var(--isds-color-orange-200);
+  --isds-color-grid-conditions-emergency-alert-3-main: var(--isds-color-red-500);
+  --isds-color-grid-conditions-emergency-alert-3-secondary: var(--isds-color-red-200);
+  --isds-color-grid-conditions-emergency-alert-3-bg: var(--isds-color-red-100);
+  --isds-color-grid-conditions-outage-main: var(--isds-color-gray-700);
+  --isds-color-grid-conditions-outage-secondary: var(--isds-color-gray-300);
+  --isds-color-grid-conditions-outage-bg: var(--isds-color-gray-100);
+  --isds-color-grid-conditions-border: var(--isds-color-teal-100);
+  --isds-color-grid-conditions-chart-1: var(--isds-color-chart-1);
+  --isds-color-grid-conditions-chart-2: var(--isds-color-chart-2);
+  --isds-color-grid-conditions-chart-3: var(--isds-color-chart-3);
+  --isds-color-grid-conditions-chart-4: var(--isds-color-chart-4);
+  --isds-color-grid-conditions-chart-5: var(--isds-color-chart-5);
+
+  // Footer
+  --isds-color-footer-footer: var(--isds-color-black-500);
+  --isds-color-footer-gradient-stop-a: var(--isds-color-red-700);
+  --isds-color-footer-gradient-stop-b: var(--isds-color-burgundy-500);
+  --isds-color-footer-gradient-stop-c: var(--isds-color-burgundy-700);
+}
+
+// Only the tokens whose On Dark value differs from Normal.
+// TODO(figma-to-sitecore): Figma sets every Grid Conditions token to plain white in On Dark, which
+// looks undesigned; they keep their Normal colors here until the designer defines them.
+[data-color-theme='on-dark'],
+.isds-color-theme-on-dark {
+  --isds-color-text-primary: var(--isds-color-white-500);
+  --isds-color-text-secondary: var(--isds-color-gray-300);
+  --isds-color-text-brand: var(--isds-color-white-500);
+  --isds-color-text-disabled: var(--isds-color-gray-700);
+
+  --isds-color-surface-default: var(--isds-color-blue-500);
+  --isds-color-surface-subtle: var(--isds-color-gray-900);
+  --isds-color-surface-brand: var(--isds-color-white-500);
+
+  --isds-color-interactive-default: var(--isds-color-white-500);
+  --isds-color-interactive-hover: var(--isds-color-gold-400);
+  --isds-color-interactive-secondary: var(--isds-color-white-500);
+  --isds-color-interactive-secondary-hover: var(--isds-color-gray-100);
+  --isds-color-interactive-icons-and-underlines: var(--isds-color-yellow-700);
+  --isds-color-interactive-disabled-icons: var(--isds-color-gray-700);
+  --isds-color-interactive-link-default: var(--isds-color-interactive-default);
+  --isds-color-interactive-link-hover: var(--isds-color-interactive-hover);
+
+  --isds-color-border-default: var(--isds-color-white-500);
+  --isds-color-border-subtle: var(--isds-color-gray-500);
+
+  --isds-color-status-error: var(--isds-color-red-600);
+}
+
+// Gradients. One mode in Figma, so they don't change per theme.
+// Angles come from each Figma style's gradient handles; check them against the design on
+// non-square elements.
+:root {
+  // Stops ("Gradient Tokens")
+  --isds-color-gradient-brand-primary-a: var(--isds-color-blue-700);
+  --isds-color-gradient-brand-primary-b: var(--isds-color-burgundy-500);
+  --isds-color-gradient-brand-primary-c: var(--isds-color-orange-600);
+  --isds-color-gradient-brand-primary-d: var(--isds-color-yellow-700);
+  // Unused? No gradient style uses the Hero stops.
+  --isds-color-gradient-hero-a: var(--isds-color-coral-700);
+  --isds-color-gradient-hero-b: var(--isds-color-coral-800);
+  --isds-color-gradient-hero-c: var(--isds-color-burgundy-500);
+  --isds-color-gradient-hero-d: var(--isds-color-blue-700);
+
+  // Gradient/* color styles. Not included: Gradient/Markets+ Gradient (archived Markets+ work,
+  // six colors outside the palette).
+  --isds-gradient-new-full-width: linear-gradient(
+    141deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 50%,
+    var(--isds-color-coral-700) 100%
+  );
+  --isds-gradient-new-text-hover: linear-gradient(
+    90deg,
+    var(--isds-color-blue-700) 0%,
+    var(--isds-color-coral-800) 100%
+  );
+  --isds-gradient-primary: linear-gradient(
+    90deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 28%,
+    var(--isds-color-gradient-brand-primary-c) 57%,
+    var(--isds-color-gradient-brand-primary-d) 93%
+  );
+  --isds-gradient-secondary: linear-gradient(
+    129deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 28%,
+    var(--isds-color-gradient-brand-primary-c) 57%,
+    var(--isds-color-gradient-brand-primary-d) 93%
+  );
+  --isds-gradient-hover-fill: linear-gradient(
+    126deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 28%,
+    var(--isds-color-gradient-brand-primary-c) 57%,
+    var(--isds-color-gradient-brand-primary-d) 93%
+  );
+  --isds-gradient-text: linear-gradient(
+    90deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 28%,
+    var(--isds-color-orange-600) 57%,
+    var(--isds-color-yellow-700) 93%
+  );
+  --isds-gradient-warm-bg: linear-gradient(
+    124deg,
+    var(--isds-color-burgundy-500) 0%,
+    var(--isds-color-orange-600) 55%,
+    var(--isds-color-yellow-700) 93%
+  );
+  --isds-gradient-dark-bg-light-left-dark-right: linear-gradient(
+    40deg,
+    var(--isds-color-orange-600) 0%,
+    var(--isds-color-burgundy-500) 50%,
+    var(--isds-color-blue-700) 100%
+  );
+  --isds-gradient-dark-bg-dark-left-light-right: linear-gradient(
+    141deg,
+    var(--isds-color-gradient-brand-primary-a) 0%,
+    var(--isds-color-gradient-brand-primary-b) 28%,
+    var(--isds-color-gradient-brand-primary-c) 57%,
+    var(--isds-color-gradient-brand-primary-d) 93%
+  );
+  --isds-gradient-hover-surface-yellow-glow: linear-gradient(
+    23deg,
+    var(--isds-color-yellow-700) 0%,
+    var(--isds-color-white-500) 80%
+  );
+  --isds-gradient-hover-button-on-dark: linear-gradient(
+    189deg,
+    var(--isds-color-white-500) 0%,
+    var(--isds-color-yellow-700) 100%
+  );
+}

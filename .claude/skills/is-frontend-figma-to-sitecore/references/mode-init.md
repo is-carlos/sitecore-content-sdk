@@ -36,6 +36,7 @@ Plan only what's missing, following [token-layer.md](token-layer.md) → "Files"
 | `src/styles/base/_index.scss`, `_reset.scss` (if agreed), `_rich-text.scss`, `_buttons.scss`, `_forms.scss` | create (`_reset.scss` with content; the others empty with a comment) |
 | `src/pages/_app.tsx` or root `layout.tsx` | add `import '../styles/main.scss';` (relative to that file) |
 | `.storybook/preview.tsx` | import the same global stylesheet; add the theme toolbar if agreed (see [storybook.md](storybook.md)) |
+| `src/stories/design-system/DesignSystem.tsx`, `DesignSystem.module.scss` | copy from [assets/storybook/](../assets/storybook/) (only if Storybook exists and they are missing): the story kit every design-system story uses ([storybook.md](storybook.md) → "Design-system stories") |
 | `sitecore.cli.config.ts` | add `'<component-root>/**/*.stories.*'` and `'<component-root>/**/*.fields.*'` to `componentMap.exclude` if missing — otherwise the map generator registers stories and sample fields as Sitecore components |
 
 If `sass` isn't installed, the first line of the proposal is: ask the user to run `npm install -D sass`.

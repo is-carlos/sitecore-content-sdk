@@ -1,0 +1,3 @@
+// Global entry for the design system. Imported once, in src/pages/_app.tsx and .storybook/preview.tsx.
+@use 'tokens';
+@use 'base';

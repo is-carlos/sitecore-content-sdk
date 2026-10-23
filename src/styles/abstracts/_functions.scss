@@ -1,0 +1,24 @@
+@use 'sass:math';
+
+$base-font-size: 16px !default;
+// Viewport range for fluid values: the Figma Grid System's Mobile and Desktop viewport widths.
+$fluid-min-vw: 360px !default;
+$fluid-max-vw: 1600px !default;
+
+@function rem($px) {
+  @return math.div($px, $base-font-size) * 1rem;
+}
+
+// A value that scales from $mobile (at $fluid-min-vw) to $desktop (at $fluid-max-vw).
+@function fluid($mobile, $desktop) {
+  @if $mobile == $desktop {
+    @return rem($mobile);
+  }
+  $slope: math.div($desktop - $mobile, $fluid-max-vw - $fluid-min-vw);
+  $intercept: $mobile - $slope * $fluid-min-vw;
+  @return clamp(
+    #{rem(math.min($mobile, $desktop))},
+    #{rem($intercept)} + #{$slope * 100}vw,
+    #{rem(math.max($mobile, $desktop))}
+  );
+}

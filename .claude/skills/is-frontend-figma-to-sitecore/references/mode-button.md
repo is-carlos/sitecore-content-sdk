@@ -55,7 +55,7 @@ For each button's Figma URL: load `figma-use` (if not loaded), `create_session`,
 
 ## Step 4f — Storybook
 
-Plan to create or update `src/stories/design-system/Buttons.stories.tsx`: one story per type rendering an `<a>` and a `<button>`, default and disabled side by side. Hover, focus and active can't be forced without `storybook-addon-pseudo-states`: if it's installed, add a story per state with `parameters.pseudo`; otherwise say in the story description to hover and tab through them.
+Plan to copy `Buttons.stories.tsx` from the template if it doesn't exist ([storybook.md](storybook.md) → "Design-system stories"). It finds every `.isds-button-*` class in the CSS and shows each as an `<a>` and a `<button>`, default and disabled, in every theme. Hover, focus and active can't be forced without `storybook-addon-pseudo-states`: if it's installed, add a story per state with `parameters.pseudo`.
 
 ## Step 4g — Proposal
 

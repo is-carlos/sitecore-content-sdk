@@ -4,7 +4,8 @@ import { I18nProvider } from 'next-localization';
 import Bootstrap from 'src/Bootstrap';
 import { SitecorePageProps } from '@sitecore-content-sdk/nextjs';
 import scConfig from 'sitecore.config';
-import { openSans, poppins } from 'lib/fonts';
+import { cssFontFamily, openSans, poppins, robotoMono, sourceSans, spaceGrotesk } from 'lib/fonts';
+import '../styles/main.scss';
 
 function App({ Component, pageProps }: AppProps<SitecorePageProps>): JSX.Element {
   const { dictionary, ...rest } = pageProps;
@@ -14,8 +15,11 @@ function App({ Component, pageProps }: AppProps<SitecorePageProps>): JSX.Element
       {/* styled-jsx only interpolates values, so the font families are set one by one */}
       <style jsx global>{`
         :root {
-          --font-poppins: ${poppins.style.fontFamily};
-          --font-open-sans: ${openSans.style.fontFamily};
+          --font-source-sans: ${cssFontFamily(sourceSans)};
+          --font-space-grotesk: ${cssFontFamily(spaceGrotesk)};
+          --font-roboto-mono: ${cssFontFamily(robotoMono)};
+          --font-poppins: ${cssFontFamily(poppins)};
+          --font-open-sans: ${cssFontFamily(openSans)};
         }
       `}</style>
       <Bootstrap {...pageProps} />

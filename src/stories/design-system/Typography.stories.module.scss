@@ -1,0 +1,127 @@
+// One class per Figma text style, for Typography.stories.tsx. The type mode keeps this in sync
+// with src/styles/abstracts/_type.scss.
+@use '../../styles/abstracts' as *;
+
+.displayXxl {
+  @include display-xxl;
+}
+
+.displayXl {
+  @include display-xl;
+}
+
+.displayL {
+  @include display-l;
+}
+
+.displayM {
+  @include display-m;
+}
+
+.displayS {
+  @include display-s;
+}
+
+.displayXs {
+  @include display-xs;
+}
+
+.bodyL {
+  @include body-l;
+}
+
+.bodyM {
+  @include body-m;
+}
+
+.bodyMNoheight {
+  @include body-m-noheight;
+}
+
+.bodyS {
+  @include body-s;
+}
+
+.bodySNoheight {
+  @include body-s-noheight;
+}
+
+.otherCaption {
+  @include other-caption;
+}
+
+.otherEyebrow {
+  @include other-eyebrow;
+}
+
+.otherFormField {
+  @include other-form-field;
+}
+
+.otherButton {
+  @include other-button;
+}
+
+.otherCodeL {
+  @include other-code-l;
+}
+
+.wysiwygH2 {
+  @include wysiwyg-h2;
+}
+
+.wysiwygH3 {
+  @include wysiwyg-h3;
+}
+
+.wysiwygH4 {
+  @include wysiwyg-h4;
+}
+
+.wysiwygH5 {
+  @include wysiwyg-h5;
+}
+
+.wysiwygH6 {
+  @include wysiwyg-h6;
+}
+
+.otherNavigationLink {
+  @include other-navigation-link;
+}
+
+.otherCardHeadline {
+  @include other-card-headline;
+}
+
+.otherCardTag {
+  @include other-card-tag;
+}
+
+.otherCardDateL {
+  @include other-card-date-l;
+}
+
+.otherCardDateS {
+  @include other-card-date-s;
+}
+
+.otherCardDateXs {
+  @include other-card-date-xs;
+}
+
+.infographicSmallLabel {
+  @include infographic-small-label;
+}
+
+.bodyLNoheight {
+  @include body-l-noheight;
+}
+
+.cardHeadlineM {
+  @include card-headline-m;
+}
+
+.richText {
+  max-width: 45rem;
+}

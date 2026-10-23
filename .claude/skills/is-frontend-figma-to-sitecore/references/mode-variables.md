@@ -17,6 +17,10 @@ Use `## Document` from `url-references.md`; if it's empty, ask for it (see [mode
 ## Step 4c — Summary
 
 - First fetch → say how many collections, variables and styles were saved.
+- **Unlisted variables** — always report `unlistedVariables` (variables or styles reference them, but no collection in the cache lists them), as a table: name · reason · used by. They're marked `(deleted)` / `(library)` in the cache too.
+  - `deleted` — removed from its collection, but still bound somewhere (e.g. a text style's paragraph spacing). The value is no longer in Figma's tables. Flag it for the designer; the modes that hit it (`type`, `spacing`…) must ask what to use instead.
+  - `library` — comes from a library file. Offer to export that file too (ask for its URL).
+  - `missing` — can't be resolved at all. Flag it.
 - Re-fetch → show a table of what changed: name, old value, new value (added and removed too). Use `git diff` on the cache files when they're committed. Then list the design-system modes the changes affect (e.g. a changed `Color Tokens` value → `color`).
 
 ## Bail
